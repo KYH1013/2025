@@ -77,70 +77,47 @@ if birth_date:
 
     st.success("✨ 분석 완료! 당신의 생일 정보입니다.")
 
-    col1, col2 = st.columns(2)
-    card_style = "padding:15px; border-radius:10px; border:1px solid #ccc; min-height:120px; overflow:auto;"
+    # ----------------------------
+    # 탄생화
+    # ----------------------------
+    flower = get_birth_flower(month, day)
+    if flower:
+        with st.expander(f"🌸 {month}월 {day}일의 탄생화 보기"):
+            st.write(f"**{flower['name']}** — {flower['meaning']}")
+    else:
+        st.info("해당 날짜의 탄생화 정보가 없습니다.")
 
     # ----------------------------
-    # 탄생화 & 탄생석
+    # 탄생석
     # ----------------------------
-    with col1:
-        st.markdown("### 🌸 탄생화")
-        flower = get_birth_flower(month, day)
-        if flower:
-            st.markdown(f"""
-            <div style="{card_style}">
-                <h4>{month}월 {day}일의 탄생화</h4>
-                <p><b>{flower['name']}</b> — {flower['meaning']}</p>
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.info("해당 날짜의 탄생화 정보가 없습니다.")
-
-        st.markdown("### 💎 탄생석")
-        stone = get_birthstone(month)
-        if stone:
-            st.markdown(f"""
-            <div style="{card_style}">
-                <h4>{month}월의 탄생석</h4>
-                <p><b>{stone['name']}</b> — {stone['meaning']}</p>
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.info("해당 월의 탄생석 정보가 없습니다.")
+    stone = get_birthstone(month)
+    if stone:
+        with st.expander(f"💎 {month}월의 탄생석 보기"):
+            st.write(f"**{stone['name']}** — {stone['meaning']}")
+    else:
+        st.info("해당 월의 탄생석 정보가 없습니다.")
 
     # ----------------------------
-    # 별자리 & 띠 (색 글자로 표시)
+    # 별자리
     # ----------------------------
-    with col2:
-        st.markdown("### ✨ 별자리")
-        zodiac = get_zodiac_sign(month, day)
-        emoji = ZODIAC_EMOJI.get(zodiac, "")
-        st.markdown(f"""
-        <div style="{card_style}">
-            <h4>{zodiac} {emoji}</h4>
-        </div>
-        """, unsafe_allow_html=True)
+    zodiac = get_zodiac_sign(month, day)
+    emoji = ZODIAC_EMOJI.get(zodiac, "")
+    with st.expander(f"✨ 별자리 보기"):
+        st.write(f"{zodiac} {emoji}")
 
-        st.markdown("### 🐲 나는 무슨 띠?")
-        st.markdown(f"""
-        <div style="{card_style}">
-            <h4>{color_name} {animal}띠 {animal_emoji}</h4>
-        </div>
-        """, unsafe_allow_html=True)
+    # ----------------------------
+    # 띠
+    # ----------------------------
+    with st.expander("🐲 나는 무슨 띠?"):
+        st.write(f"{color_name} {animal}띠 {animal_emoji}")
 
     # ----------------------------
     # 세계 기념일
     # ----------------------------
-    st.markdown("### 🌍 세계 기념일")
     days = get_world_days(month, day)
     if days:
-        st.markdown("<div style='display:flex; flex-wrap:wrap;'>", unsafe_allow_html=True)
-        for d in days:
-            st.markdown(f"""
-            <div style="margin:5px; padding:10px; border-radius:8px; border:1px solid #ccc; min-height:50px;">
-                {d}
-            </div>
-            """, unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
+        with st.expander("🌍 세계 기념일 보기"):
+            for d in days:
+                st.write(f"- {d}")
     else:
         st.info("이 날짜에 등록된 세계 기념일이 없습니다.")
