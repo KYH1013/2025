@@ -54,4 +54,27 @@ if birth_date:
     st.subheader("🌸 탄생화")
     flower = get_birth_flower(month, day)
     if flower:
-        st.write(f"
+        st.write(f"**{flower['name']}** — {flower['meaning']}")
+    else:
+        st.write("해당 날짜의 탄생화 정보가 없습니다.")
+
+    st.subheader("💎 탄생석")
+    stone = get_birthstone(month)
+    if stone:
+        st.write(f"**{stone['name']}** — {stone['meaning']}")
+    else:
+        st.write("해당 월의 탄생석 정보가 없습니다.")
+
+    st.subheader("✨ 별자리")
+    st.write(get_zodiac_sign(month, day))
+
+    st.subheader("📜 간단 사주")
+    st.write(get_simple_saju(year))
+
+    st.subheader("🌍 세계 기념일")
+    days = get_world_days(month, day)
+    if days:
+        for d in days:
+            st.write(f"- {d}")
+    else:
+        st.write("이 날짜에 등록된 세계 기념일이 없습니다.")
