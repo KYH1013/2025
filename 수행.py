@@ -66,7 +66,7 @@ if birth_date:
     # ---------------- 카드 스타일 ----------------
     card_style = ("padding:20px; border-radius:15px; "
                   "border:1px solid #ddd; box-shadow:3px 3px 10px rgba(0,0,0,0.1); "
-                  "margin-bottom:15px; min-height:120px; background-color:#fafafa;")
+                  "margin-bottom:15px; min-height:120px; background-color:#ffffff;")
 
     # ---------------- 왼쪽, 오른쪽 컬럼 ----------------
     col1, col2 = st.columns(2)
@@ -101,7 +101,7 @@ if birth_date:
     zodiac_emoji = ZODIAC_EMOJI.get(zodiac, "")
     with col2:
         st.markdown(f"""
-        <div style="{card_style}; text-align:center; background-color:#E0F7FA;">
+        <div style="{card_style}; text-align:center;">
             <h3>✨ 별자리</h3>
             <p style="font-size:20px;">{zodiac} {zodiac_emoji}</p>
         </div>
@@ -109,7 +109,7 @@ if birth_date:
 
     # ---------------- 띠 ----------------
         st.markdown(f"""
-        <div style="{card_style}; text-align:center; background-color:#FFF3E0;">
+        <div style="{card_style}; text-align:center;">
             <h3>🐲 나는 무슨 띠?</h3>
             <p style="font-size:20px;">{color_name} {animal}띠 {animal_emoji}</p>
         </div>
@@ -123,7 +123,7 @@ if birth_date:
         for d in days:
             st.markdown(f"""
             <div style="margin:5px; padding:15px; border-radius:10px; border:1px solid #ccc; 
-                        min-height:60px; background-color:#FFF9C4; flex:1;">
+                        min-height:60px; background-color:#ffffff; flex:1;">
                 {d}
             </div>
             """, unsafe_allow_html=True)
