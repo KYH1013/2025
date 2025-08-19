@@ -42,24 +42,15 @@ if birth_date:
         "사수자리 (Sagittarius)": "♐️ 🏹", "염소자리 (Capricorn)": "♑️ 🐐",
     }
 
-    ZODIAC_COLOR = {
-        "물병자리 (Aquarius)": "#1E90FF", "물고기자리 (Pisces)": "#00CED1",
-        "양자리 (Aries)": "#FF4500", "황소자리 (Taurus)": "#228B22",
-        "쌍둥이자리 (Gemini)": "#FFD700", "게자리 (Cancer)": "#FF6347",
-        "사자자리 (Leo)": "#FFA500", "처녀자리 (Virgo)": "#32CD32",
-        "천칭자리 (Libra)": "#00FA9A", "전갈자리 (Scorpio)": "#8B0000",
-        "사수자리 (Sagittarius)": "#1E90FF", "염소자리 (Capricorn)": "#A0522D",
-    }
-
     # --- 60간지 계산 ---
     tian_gan = ['갑', '을', '병', '정', '무', '기', '경', '신', '임', '계']
     di_zhi = ['자', '축', '인', '묘', '진', '사', '오', '미', '신', '유', '술', '해']
     colors_by_tian_gan = {
-        '갑': '#1E90FF', '을': '#1E90FF',  # 청색
-        '병': '#FF4500', '정': '#FF4500',  # 적색
-        '무': '#FFD700', '기': '#FFD700',  # 황색
-        '경': '#FFFFFF', '신': '#FFFFFF',  # 백색
-        '임': '#000000', '계': '#000000',  # 흑색
+        '갑':'푸른', '을':'푸른',  # 청색
+        '병':'붉은', '정':'붉은',  # 적색
+        '무':'황금', '기':'황금',    # 황색
+        '경':'흰', '신':'흰',      # 백색
+        '임':'검은', '계':'검은',  # 흑색
     }
     animals_by_di_zhi = {
         '자':'쥐','축':'소','인':'호랑이','묘':'토끼','진':'용','사':'뱀',
@@ -77,7 +68,7 @@ if birth_date:
     dz = di_zhi[dz_index]
     animal = animals_by_di_zhi[dz]
     animal_emoji = emojis_by_animal[animal]
-    animal_color = colors_by_tian_gan[tg]
+    color_name = colors_by_tian_gan[tg]
 
     # --- 세계 기념일 ---
     def get_world_days(month, day):
@@ -118,23 +109,22 @@ if birth_date:
             st.info("해당 월의 탄생석 정보가 없습니다.")
 
     # ----------------------------
-    # 별자리 & 띠
+    # 별자리 & 띠 (색 글자로 표시)
     # ----------------------------
     with col2:
         st.markdown("### ✨ 별자리")
         zodiac = get_zodiac_sign(month, day)
         emoji = ZODIAC_EMOJI.get(zodiac, "")
-        color = ZODIAC_COLOR.get(zodiac, "#000000")
         st.markdown(f"""
-        <div style="{card_style}; color:{color}; font-weight:bold;">
+        <div style="{card_style}">
             <h4>{zodiac} {emoji}</h4>
         </div>
         """, unsafe_allow_html=True)
 
         st.markdown("### 🐲 나는 무슨 띠?")
         st.markdown(f"""
-        <div style="{card_style}; color:{animal_color}; font-weight:bold;">
-            <h4>{animal}띠 {animal_emoji}</h4>
+        <div style="{card_style}">
+            <h4>{color_name} {animal}띠 {animal_emoji}</h4>
         </div>
         """, unsafe_allow_html=True)
 
