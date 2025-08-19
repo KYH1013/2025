@@ -57,7 +57,7 @@ if birth_date:
 
     st.success("✨ 분석 완료! 당신의 생일 정보입니다.")
 
-    # --- UI 디자인: 2열 레이아웃 ---
+    # --- 2열 레이아웃 ---
     col1, col2 = st.columns(2)
 
     # 탄생화 & 탄생석
@@ -66,7 +66,7 @@ if birth_date:
         flower = get_birth_flower(month, day)
         if flower:
             st.markdown(f"""
-            <div style="background-color:#fff0f5; padding:15px; border-radius:15px; box-shadow:2px 2px 5px #ccc;">
+            <div style="padding:15px; border-radius:10px; border:1px solid #ccc;">
                 <h4>{month}월 {day}일의 탄생화</h4>
                 <p><b>{flower['name']}</b> — {flower['meaning']}</p>
             </div>
@@ -78,7 +78,7 @@ if birth_date:
         stone = get_birthstone(month)
         if stone:
             st.markdown(f"""
-            <div style="background-color:#e0ffff; padding:15px; border-radius:15px; box-shadow:2px 2px 5px #ccc;">
+            <div style="padding:15px; border-radius:10px; border:1px solid #ccc;">
                 <h4>{month}월의 탄생석</h4>
                 <p><b>{stone['name']}</b> — {stone['meaning']}</p>
             </div>
@@ -92,7 +92,7 @@ if birth_date:
         zodiac = get_zodiac_sign(month, day)
         emoji = ZODIAC_EMOJI.get(zodiac, "")
         st.markdown(f"""
-        <div style="background-color:#fffacd; padding:15px; border-radius:15px; box-shadow:2px 2px 5px #ccc;">
+        <div style="padding:15px; border-radius:10px; border:1px solid #ccc;">
             <h4>{zodiac} {emoji}</h4>
         </div>
         """, unsafe_allow_html=True)
@@ -101,7 +101,7 @@ if birth_date:
         animal = get_zodiac_animal(year)
         animal_emoji = ZODIAC_ANIMAL_EMOJI.get(animal, "")
         st.markdown(f"""
-        <div style="background-color:#d8bfd8; padding:15px; border-radius:15px; box-shadow:2px 2px 5px #ccc;">
+        <div style="padding:15px; border-radius:10px; border:1px solid #ccc;">
             <h4>{animal}띠 {animal_emoji}</h4>
         </div>
         """, unsafe_allow_html=True)
@@ -113,7 +113,7 @@ if birth_date:
         st.markdown("<div style='display:flex; flex-wrap:wrap;'>", unsafe_allow_html=True)
         for d in days:
             st.markdown(f"""
-            <div style="background-color:#f5f5dc; margin:5px; padding:10px; border-radius:10px; box-shadow:1px 1px 3px #ccc;">
+            <div style="margin:5px; padding:10px; border-radius:8px; border:1px solid #ccc;">
                 {d}
             </div>
             """, unsafe_allow_html=True)
