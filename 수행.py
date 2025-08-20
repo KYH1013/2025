@@ -15,7 +15,7 @@ if dob:
     st.subheader(f"🎂 {dob.strftime('%Y년 %m월 %d일')} 정보")
 
     # 탄생화
-    flower = birthdata.BIRTH_FLOWERS.get(month)
+    flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(month)
     if flower:
         st.write(f"🌸 **탄생화:** {flower['name']} - {flower['meaning']}")
 
