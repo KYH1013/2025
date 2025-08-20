@@ -25,7 +25,7 @@ if dob:
         st.write(f"💎 **탄생석:** {stone['name']} - {stone['meaning']}")
 
     # 별자리
-    sign, sign_emoji = birthdata.ZODIAC_SIGNS(month, day)
+    sign, sign_emoji = birthdata.ZODIAC_SIGNS.get(month, day)
     st.write(f"✨ **별자리:** {sign} {sign_emoji}")
 
     # 띠
