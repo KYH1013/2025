@@ -424,6 +424,22 @@ ZODIAC_SIGNS = [
     ("Sagittarius ♐", (11,22), (12,21))
 ]
 
+ZODIAC_EMOJIS = {
+    "Capricorn ♑": "🐐",
+    "Aquarius ♒": "🏺",
+    "Pisces ♓": "🐟",
+    "Aries ♈": "🐏",
+    "Taurus ♉": "🐂",
+    "Gemini ♊": "👯",
+    "Cancer ♋": "🦀",
+    "Leo ♌": "🦁",
+    "Virgo ♍": "👩",
+    "Libra ♎": "⚖️",
+    "Scorpio ♏": "🦂",
+    "Sagittarius ♐": "🏹"
+}
+
+
 def get_zodiac(month, day):
     for sign, start, end in ZODIAC_SIGNS:
         sm, sd = start
@@ -800,5 +816,6 @@ HOLIDAYS_BY_DAY.update({
 "12-31": ["제야의 종 🎆"],
 })
 
-
+def get_chinese_zodiac(year):
+    return CHINESE_ZODIAC[(year - 4) % 12]
 
