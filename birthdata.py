@@ -408,27 +408,32 @@ BIRTH_STONES = {
 
 
 # 별자리 (시작일, 종료일)
+
+ZODIAC_SIGNS = [
+    ("Capricorn ♑", (12,22), (1,19)),
+    ("Aquarius ♒", (1,20), (2,18)),
+    ("Pisces ♓", (2,19), (3,20)),
+    ("Aries ♈", (3,21), (4,19)),
+    ("Taurus ♉", (4,20), (5,20)),
+    ("Gemini ♊", (5,21), (6,20)),
+    ("Cancer ♋", (6,21), (7,22)),
+    ("Leo ♌", (7,23), (8,22)),
+    ("Virgo ♍", (8,23), (9,22)),
+    ("Libra ♎", (9,23), (10,22)),
+    ("Scorpio ♏", (10,23), (11,21)),
+    ("Sagittarius ♐", (11,22), (12,21))
+]
+
 def get_zodiac(month, day):
     for sign, start, end in ZODIAC_SIGNS:
         sm, sd = start
         em, ed = end
-        if (month == sm and day >= sd) or (month == em and day <= ed) or (sm < em and month > sm and month < em):
+        # 월이 넘어가는 경우도 처리
+        if (sm < em and ((month == sm and day >= sd) or (month == em and day <= ed) or (month > sm and month < em))) \
+           or (sm > em and ((month == sm and day >= sd) or (month == em and day <= ed) or (month > sm or month < em))):
             return sign, ZODIAC_EMOJIS[sign]
     return "", ""
-ZODIAC_SIGNS = {
-    "물병자리 (Aquarius)": ((1, 20), (2, 18)),
-    "물고기자리 (Pisces)": ((2, 19), (3, 20)),
-    "양자리 (Aries)": ((3, 21), (4, 19)),
-    "황소자리 (Taurus)": ((4, 20), (5, 20)),
-    "쌍둥이자리 (Gemini)": ((5, 21), (6, 21)),
-    "게자리 (Cancer)": ((6, 22), (7, 22)),
-    "사자자리 (Leo)": ((7, 23), (8, 22)),
-    "처녀자리 (Virgo)": ((8, 23), (9, 22)),
-    "천칭자리 (Libra)": ((9, 23), (10, 22)),
-    "전갈자리 (Scorpio)": ((10, 23), (11, 22)),
-    "사수자리 (Sagittarius)": ((11, 23), (12, 21)),
-    "염소자리 (Capricorn)": ((12, 22), (1, 19)),
-}
+
 
 # 사주 기초
 HEAVENLY_STEMS = ["갑", "을", "병", "정", "무", "기", "경", "신", "임", "계"]
