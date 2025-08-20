@@ -409,6 +409,12 @@ BIRTH_STONES = {
 
 # 별자리 (시작일, 종료일)
 
+CHINESE_ZODIAC = [
+    "쥐띠 🐭", "소띠 🐮", "호랑이띠 🐯", "토끼띠 🐰",
+    "용띠 🐲", "뱀띠 🐍", "말띠 🐴", "양띠 🐑",
+    "원숭이띠 🐵", "닭띠 🐔", "개띠 🐶", "돼지띠 🐷"
+]
+
 ZODIAC_SIGNS = [
     ("Capricorn ♑", (12,22), (1,19)),
     ("Aquarius ♒", (1,20), (2,18)),
@@ -818,4 +824,3 @@ HOLIDAYS_BY_DAY.update({
 
 def get_chinese_zodiac(year):
     return CHINESE_ZODIAC[(year - 4) % 12]
-
