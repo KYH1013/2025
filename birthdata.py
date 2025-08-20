@@ -408,6 +408,13 @@ BIRTH_STONES = {
 
 
 # 별자리 (시작일, 종료일)
+def get_zodiac(month, day):
+    for sign, start, end in ZODIAC_SIGNS:
+        sm, sd = start
+        em, ed = end
+        if (month == sm and day >= sd) or (month == em and day <= ed) or (sm < em and month > sm and month < em):
+            return sign, ZODIAC_EMOJIS[sign]
+    return "", ""
 ZODIAC_SIGNS = {
     "물병자리 (Aquarius)": ((1, 20), (2, 18)),
     "물고기자리 (Pisces)": ((2, 19), (3, 20)),
