@@ -5,7 +5,6 @@ from datetime import datetime
 st.set_page_config(page_title="생일 정보 확인", layout="centered")
 st.title("🎉 나의 생일 정보 확인 웹사이트")
 
-# 생년월일 입력
 dob = st.date_input("생년월일을 선택하세요", datetime(2000,1,1))
 
 if dob:
@@ -16,7 +15,7 @@ if dob:
     st.subheader(f"🎂 {dob.strftime('%Y년 %m월 %d일')} 정보")
 
     # 탄생화
-    flower = birthdata.BIRTH_FLOWERS.get(month)
+    flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(month)
     if flower:
         st.write(f"🌸 **탄생화:** {flower['name']} - {flower['meaning']}")
 
