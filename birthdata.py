@@ -391,10 +391,19 @@ BIRTH_FLOWERS_BY_DAY.update({
 })
 
 # 월별 탄생석
-BIRTHSTONES = {
-    1: {"name": "가넷 (Garnet)", "meaning": "우정, 진실"},
-    2: {"name": "자수정 (Amethyst)", "meaning": "평화, 성실"},
-    # ... 12월까지 ...
+BIRTH_STONES = {
+    1: "Garnet 💎 - 충성, 진실",
+    2: "Amethyst 💜 - 평화, 안정",
+    3: "Aquamarine 🌊 - 용기, 청명",
+    4: "Diamond 💎 - 순수, 힘",
+    5: "Emerald 💚 - 사랑, 희망",
+    6: "Pearl 🤍 - 순수, 진실",
+    7: "Ruby ❤️ - 열정, 에너지",
+    8: "Peridot 💚 - 건강, 화합",
+    9: "Sapphire 💙 - 지혜, 성실",
+    10: "Opal 💎 - 창의, 행복",
+    11: "Topaz 💛 - 희망, 용기",
+    12: "Turquoise 🟦 - 평화, 보호"
 }
 
 # 별자리 (시작일, 종료일)
