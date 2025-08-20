@@ -14,27 +14,25 @@ if dob:
 
     st.subheader(f"🎂 {dob.strftime('%Y년 %m월 %d일')} 정보")
 
-    # 탄생화
-    flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(month)
-    if flower:
-        st.write(f"🌸 **탄생화:** {flower['name']} - {flower['meaning']}")
-
-    # 탄생석
-    stone = birthdata.BIRTH_STONES.get(month)
-    if stone:
-        st.write(f"💎 **탄생석:** {stone['name']} - {stone['meaning']}")
-
-    # 별자리
-    sign, sign_emoji = birthdata.get_zodiac(month, day)
-    st.write(f"✨ **별자리:** {sign} {sign_emoji}")
-
-
-    # 띠
-    chinese_zodiac = birthdata.get_chinese_zodiac(year)
-    st.write(f"🐲 **띠:** {chinese_zodiac}")
-
-    # 월별 기념일
-    month_day_key = f"{month:02d}-{day:02d}"
-    holidays = birthdata.HOLIDAYS_BY_DAY.get(month_day_key, [])
-    if holidays:
-        st.write(f"🎉 **기념일:** {', '.join(holidays)}")
+    # 카드 컨테이너
+    with st.container():
+        st.markdown(
+            f"""
+            <div style="background-color:white; padding:20px; border-radius:10px; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
+                <h3>🌸 탄생화</h3>
+                <p>{birthdata.BIRTH_FLOWERS.get(month)['name']} - {birthdata.BIRTH_FLOWERS.get(month)['meaning']}</p>
+                <hr>
+                <h3>💎 탄생석</h3>
+                <p>{birthdata.BIRTH_STONES.get(month)['name']} - {birthdata.BIRTH_STONES.get(month)['meaning']}</p>
+                <hr>
+                <h3>✨ 별자리</h3>
+                <p>{birthdata.get_zodiac(month, day)[0]} {birthdata.get_zodiac(month, day)[1]}</p>
+                <hr>
+                <h3>🐲 띠</h3>
+                <p>{birthdata.get_chinese_zodiac(year)}</p>
+                <hr>
+                <h3>🎉 기념일</h3>
+                <p>{', '.join(birthdata.HOLIDAYS_BY_DAY.get(f"{month:02d}-{day:02d}", []))}</p>
+            </div>
+            """, unsafe_allow_html=True
+        )
