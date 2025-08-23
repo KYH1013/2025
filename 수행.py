@@ -12,14 +12,15 @@ st.markdown("""
         display: flex;
         flex-wrap: wrap;
         gap: 20px;
-        justify-content: space-around;  /* 좌우 여백을 자동으로 맞춤 */
+        justify-content: space-between;  /* 좌우 여백을 자동으로 맞춤 */
         margin-top: 20px;
     }
     .card {
-        flex: 1 1 calc(50% - 20px); /* 두 개씩 배치, 카드 간격을 20px로 유지 */
+        flex: 0 0 calc(50% - 20px); /* 두 개씩 배치, 카드 간격을 20px로 유지 */
         background-color: #f8f9fc;
         border-radius: 15px;
         padding: 20px;
+        box-sizing: border-box;
         min-width: 250px;
         max-width: 300px;  /* 카드 크기 최적화 */
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
