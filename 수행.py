@@ -14,10 +14,10 @@ if dob:
 
     st.subheader(f"🎂 {dob.strftime('%Y년 %m월 %d일')} 정보")
 
-   month_day_key = f"{month:02d}-{day:02d}"   # 예: 01-01
+      month_day_key = f"{month:02d}-{day:02d}"   # 예: 01-01
     flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(month_day_key)
     if flower:
-    st.write(f"🌸 **탄생화:** {flower['name']} - {flower['meaning']}")
+        st.write(f"🌸 **탄생화:** {flower['name']} - {flower['meaning']}")
 
     # 탄생석
     stone = birthdata.BIRTH_STONES.get(month)
