@@ -5,46 +5,46 @@ from datetime import datetime
 st.set_page_config(page_title="생일 정보 확인", layout="centered")
 st.title("🎉 나의 생일 정보 확인 웹사이트")
 
-# 카드 스타일 + 2*2 그리드
+# 카드 스타일 + 2*2 그리드 (한눈에 보이도록 조정)
 st.markdown("""
     <style>
     .grid-container {
         display: flex;
         flex-wrap: wrap;
-        gap: 40px;
-        justify-content: center;
+        gap: 20px;
+        justify-content: space-around;  /* 좌우 여백을 자동으로 맞춤 */
         margin-top: 20px;
     }
     .card {
-        flex: 1 1 calc(50% - 40px); /* 두 개씩 배치 */
+        flex: 1 1 calc(50% - 20px); /* 두 개씩 배치, 카드 간격을 20px로 유지 */
         background-color: #f8f9fc;
-        border-radius: 20px;
-        padding: 25px;
+        border-radius: 15px;
+        padding: 20px;
         min-width: 250px;
-        max-width: 320px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        max-width: 300px;  /* 카드 크기 최적화 */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         text-align: center;
         transition: all 0.2s ease;
     }
     .card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     }
     .card h3 {
-        font-size: 24px;
+        font-size: 22px;
         color: #333333;
         margin-bottom: 10px;
         font-weight: bold;
     }
     .card p {
-        font-size: 18px;
+        font-size: 16px;
         color: #555555;
         line-height: 1.5;
         margin-bottom: 0;
     }
     .card .emoji {
-        font-size: 40px;
-        margin-bottom: 15px;
+        font-size: 35px;
+        margin-bottom: 10px;
     }
     </style>
 """, unsafe_allow_html=True)
