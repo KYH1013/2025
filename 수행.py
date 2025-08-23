@@ -11,39 +11,40 @@ st.markdown("""
     .grid-container {
         display: flex;
         flex-wrap: wrap;
-        gap: 30px;
+        gap: 40px;
         justify-content: center;
         margin-top: 20px;
     }
     .card {
-        flex: 1 1 calc(50% - 30px); /* 두 개씩 배치 */
-        background-color: #f4f4f9;
-        border-radius: 15px;
-        padding: 20px;
+        flex: 1 1 calc(50% - 40px); /* 두 개씩 배치 */
+        background-color: #f8f9fc;
+        border-radius: 20px;
+        padding: 25px;
         min-width: 250px;
         max-width: 320px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         text-align: center;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
     }
     .card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
     }
     .card h3 {
-        font-size: 22px;
+        font-size: 24px;
         color: #333333;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
         font-weight: bold;
     }
     .card p {
-        font-size: 16px;
+        font-size: 18px;
         color: #555555;
-        line-height: 1.6;
+        line-height: 1.5;
+        margin-bottom: 0;
     }
     .card .emoji {
-        font-size: 30px;
-        margin-bottom: 10px;
+        font-size: 40px;
+        margin-bottom: 15px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -69,7 +70,7 @@ if dob:
         <div class="card">
             <div class="emoji">🌸</div>
             <h3>탄생화</h3>
-            <p>{flower['name']}<br><i>{flower['meaning']}</i></p>
+            <p><strong>{flower['name']}</strong><br><i>{flower['meaning']}</i></p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -80,7 +81,7 @@ if dob:
         <div class="card">
             <div class="emoji">💎</div>
             <h3>탄생석</h3>
-            <p>{stone['name']}<br><i>{stone['meaning']}</i></p>
+            <p><strong>{stone['name']}</strong><br><i>{stone['meaning']}</i></p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -90,7 +91,7 @@ if dob:
     <div class="card">
         <div class="emoji">✨</div>
         <h3>별자리</h3>
-        <p>{sign} {sign_emoji}</p>
+        <p><strong>{sign}</strong> {sign_emoji}</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -100,7 +101,7 @@ if dob:
     <div class="card">
         <div class="emoji">🐲</div>
         <h3>띠</h3>
-        <p>{chinese_zodiac}</p>
+        <p><strong>{chinese_zodiac}</strong></p>
     </div>
     """, unsafe_allow_html=True)
 
