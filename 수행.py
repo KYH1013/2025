@@ -5,7 +5,7 @@ from datetime import datetime
 st.set_page_config(page_title="생일 정보 확인", layout="centered")
 st.title("🎉 나의 생일 정보 확인 웹사이트")
 
-dob = st.date_input("생년월일을 선택하세요", datetime(2000,1,1))
+dob = st.date_input("생년월일을 선택하세요", datetime(2000, 1, 1))
 
 if dob:
     month = dob.month
@@ -14,7 +14,8 @@ if dob:
 
     st.subheader(f"🎂 {dob.strftime('%Y년 %m월 %d일')} 정보")
 
-      month_day_key = f"{month:02d}-{day:02d}"   # 예: 01-01
+    # 탄생화 (월-일 키 사용)
+    month_day_key = f"{month:02d}-{day:02d}"   # 예: 01-01
     flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(month_day_key)
     if flower:
         st.write(f"🌸 **탄생화:** {flower['name']} - {flower['meaning']}")
@@ -33,7 +34,6 @@ if dob:
     st.write(f"🐲 **띠:** {chinese_zodiac}")
 
     # 월별 기념일
-    month_day_key = f"{month:02d}-{day:02d}"
     holidays = birthdata.HOLIDAYS_BY_DAY.get(month_day_key, [])
     if holidays:
         st.write(f"🎉 **기념일:** {', '.join(holidays)}")
