@@ -1,7 +1,7 @@
 import streamlit as st
 import birthdata
-from datetime import datetime, date, timedelta
-import random
+from datetime import datetime, date
+import hashlib
 
 # ---------------------------
 # 상수 정의
@@ -42,7 +42,7 @@ ELEMS_SUPPORT = {"목":"화","화":"토","토":"금","금":"수","수":"목"}
 ELEMS_CONFLICT = {"목":"금","화":"수","토":"목","금":"화","수":"화"}
 
 # ---------------------------
-# 공통 함수
+# 함수 정의
 # ---------------------------
 def get_chinese_zodiac(year):
     zodiac = CHINESE_ZODIAC[(year - 4) % 12]
@@ -66,15 +66,6 @@ def calculate_saju_compat(dob1, dob2):
         elif ELEMS_CONFLICT.get(e1) == e2:
             score -= 15
     return max(0, min(100, score))
-
-def safe_date(year, month, day):
-    try:
-        return datetime(year, month, day)
-    except ValueError:
-        if month == 2 and day == 29:
-            return datetime(year, 2, 28)
-        else:
-            raise
 
 def calculate_age(born):
     today = date.today()
@@ -100,20 +91,19 @@ def get_day_of_week(born):
     days = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"]
     return days[born.weekday()]
 
-def detailed_weekly_monthly_fortune(elem):
-    themes = {
-        "목": ["창의력", "성장", "도전"],
-        "화": ["열정", "활동성", "인간관계"],
-        "토": ["안정", "계획", "책임"],
-        "금": ["결단력", "목표", "재물"],
-        "수": ["지혜", "유연함", "학업"]
+def date_based_fortune(elem, target_date):
+    # 오행별 날짜 기반 고정 운세
+    fortunes = {
+        "목": ["창의적 하루", "성장 중심", "새로운 도전"],
+        "화": ["열정적인 하루", "인간관계 주의", "활동적"],
+        "토": ["안정된 하루", "계획 중심", "차분함"],
+        "금": ["결단력 있는 하루", "재물 운 주목", "목표 집중"],
+        "수": ["지혜로운 하루", "학업/정보 습득", "유연함"]
     }
-    theme = random.choice(themes.get(elem, ["행운", "조심", "평범"]))
-    love = random.choice(["좋음 💖", "보통 💛", "주의 ⚠️"])
-    money = random.choice(["좋음 💰", "보통 💛", "주의 ⚠️"])
-    health = random.choice(["좋음 🩺", "보통 💛", "주의 ⚠️"])
-    advice = f"오늘은 '{theme}'을/를 중시하세요."
-    return love, money, health, advice
+    key = f"{elem}-{target_date.isoformat()}"
+    hash_value = int(hashlib.sha256(key.encode()).hexdigest(), 16)
+    index = hash_value % len(fortunes.get(elem, ["평범한 하루"]))
+    return fortunes.get(elem, ["평범한 하루"])[index]
 
 # ---------------------------
 # 페이지 설정
@@ -121,19 +111,12 @@ def detailed_weekly_monthly_fortune(elem):
 st.set_page_config(page_title="생일 정보 확인", layout="centered")
 st.title("🎉 나의 생일 정보 확인 웹사이트")
 
-# 오늘 날짜
 today = datetime.today()
-min_date = safe_date(today.year - 100, today.month, today.day)
-max_date = today
+min_date = date(today.year - 100, today.month, today.day)
+max_date = today.date()
 
-# ---------------------------
-# 첫 번째 생일 입력
-# ---------------------------
-dob1 = st.date_input("첫 번째 생년월일 선택", today, min_value=min_date, max_value=max_date)
+dob1 = st.date_input("첫 번째 생년월일 선택", today.date(), min_value=min_date, max_value=max_date)
 
-# ---------------------------
-# 나이, D-Day, 개월/일 계산
-# ---------------------------
 age = calculate_age(dob1)
 d_day = days_to_birthday(dob1)
 months, total_days = months_days_since_birth(dob1)
@@ -142,9 +125,6 @@ weekday = get_day_of_week(dob1)
 st.info(f"🎈 나이: {age}세 | 다음 생일까지 D-{d_day}일 | 태어난 요일: {weekday}")
 st.success(f"🗓 태어난지 {months}개월 / {total_days}일 지났습니다")
 
-# ---------------------------
-# 탭 생성
-# ---------------------------
 tab1, tab2, tab3 = st.tabs(["📋 기본 정보", "🔮 사주 보기", "💞 종합 궁합"])
 
 # ---------------------------
@@ -153,65 +133,54 @@ tab1, tab2, tab3 = st.tabs(["📋 기본 정보", "🔮 사주 보기", "💞 �
 with tab1:
     st.subheader(f"🎂 {dob1.strftime('%Y년 %m월 %d일')} 정보")
     col1, col2 = st.columns(2)
-    
     with col1:
         with st.expander("🌸 탄생화", expanded=True):
-            flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(f"{dob1.month:02d}-{dob1.day:02d}")
+            month_day_key = f"{dob1.month:02d}-{dob1.day:02d}"
+            flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(month_day_key)
             if flower:
-                st.markdown(f"<div style='padding:10px; border-radius:10px; background-color:#fff0f5'>{flower['name']} - {flower['meaning']}</div>", unsafe_allow_html=True)
+                st.markdown(f"{flower['name']} - {flower['meaning']}")
             else:
                 st.write("정보 없음")
         with st.expander("💎 탄생석", expanded=True):
             stone = birthdata.BIRTH_STONES.get(dob1.month)
             if stone:
-                st.markdown(f"<div style='padding:10px; border-radius:10px; background-color:#fff0f5'>{stone['name']} - {stone['meaning']}</div>", unsafe_allow_html=True)
+                st.markdown(f"{stone['name']} - {stone['meaning']}")
             else:
                 st.write("정보 없음")
-    
     with col2:
         with st.expander("✨ 별자리", expanded=True):
             sign, sign_emoji = birthdata.get_zodiac(dob1.month, dob1.day)
-            st.markdown(f"<div style='padding:10px; border-radius:10px; background-color:#fff0f5'>{sign} {sign_emoji}</div>", unsafe_allow_html=True)
+            st.write(f"{sign} {sign_emoji}")
         with st.expander("🐲 띠 & 궁합", expanded=True):
             chinese_zodiac, zodiac_name = get_chinese_zodiac(dob1.year)
             compat = ZODIAC_COMPATIBILITY.get(zodiac_name, {"좋음": [], "안좋음": []})
-            st.markdown(f"<div style='padding:10px; border-radius:10px; background-color:#fff0f5'>{chinese_zodiac}<br>💖 {', '.join(compat['좋음'])}<br>💔 {', '.join(compat['안좋음'])}</div>", unsafe_allow_html=True)
+            st.write(f"{chinese_zodiac}\n💖 {', '.join(compat['좋음'])}\n💔 {', '.join(compat['안좋음'])}")
 
 # ---------------------------
-# 탭2: 사주 해석 + 운세
+# 탭2: 사주 + 날짜 기반 운세
 # ---------------------------
 with tab2:
-    st.subheader("🔮 사주 해석 & 운세")
+    st.subheader("🔮 사주 해석 & 오늘의 운세")
     elements, branches = saju_elements(dob1)
-    
     col1, col2, col3 = st.columns(3)
     for i, (branch, elem) in enumerate(zip(branches, elements)):
         col = [col1, col2, col3][i]
         col.markdown(
-            f"<div style='padding:15px; border-radius:15px; background-color:{ELEM_COLORS[elem]}; margin-bottom:10px; text-align:center;'>"
+            f"<div style='padding:15px; border-radius:15px; background-color:{ELEM_COLORS[elem]}; text-align:center;'>"
             f"<h4>{branch} ({elem})</h4>"
             f"<p>{ELEM_ADVICE[elem]}</p>"
-            f"</div>",
-            unsafe_allow_html=True
+            f"</div>", unsafe_allow_html=True
         )
-    
-    # 디테일 운세
-    st.markdown("### 📅 이번 주/이번 달 운세 (오행별 디테일)")
-    if st.button("🎲 운세 새로고침"):
-        love, money, health, advice = detailed_weekly_monthly_fortune(elements[0])
-        st.write(f"💖 사랑운: {love}")
-        st.write(f"💰 금전운: {money}")
-        st.write(f"🩺 건강운: {health}")
-        st.write(f"🌟 오늘의 조언: {advice}")
+    fortune_today = date_based_fortune(elements[0], date.today())
+    st.markdown(f"### 🌟 오늘의 운세: {fortune_today}")
 
 # ---------------------------
 # 탭3: 종합 궁합
 # ---------------------------
 with tab3:
     st.subheader("💞 종합 궁합")
-    dob2 = st.date_input("두 번째 생년월일 선택", today, min_value=min_date, max_value=max_date, key="dob2")
+    dob2 = st.date_input("두 번째 생년월일 선택", today.date(), min_value=min_date, max_value=max_date, key="dob2")
     
-    # 띠 궁합
     cz1, zn1 = get_chinese_zodiac(dob1.year)
     cz2, zn2 = get_chinese_zodiac(dob2.year)
     compat1 = ZODIAC_COMPATIBILITY.get(zn1, {"좋음": [], "안좋음": []})
@@ -221,9 +190,8 @@ with tab3:
         zodiac_result = f"💔 안 좋은 궁합: {cz1} × {cz2}"
     else:
         zodiac_result = f"💛 보통 궁합: {cz1} × {cz2}"
-    st.markdown(f"<div style='padding:15px; border-radius:10px; background-color:#fff0f5; text-align:center;'>{zodiac_result}</div>", unsafe_allow_html=True)
+    st.write(zodiac_result)
     
-    # 사주 궁합
     saju_score = calculate_saju_compat(dob1, dob2)
     if saju_score >= 70:
         saju_result = "궁합이 매우 좋음 💖💖💖"
@@ -231,11 +199,4 @@ with tab3:
         saju_result = "궁합이 보통 💛💛"
     else:
         saju_result = "궁합이 낮음 💔💔💔"
-    
-    st.markdown(
-        f"<div style='padding:20px; border-radius:10px; background-color:#f0f8ff; text-align:center;'>"
-        f"<h3>사주 점수: {saju_score}/100</h3>"
-        f"<p>{saju_result}</p>"
-        f"</div>",
-        unsafe_allow_html=True
-    )
+    st.markdown(f"사주 점수: {saju_score}/100 | {saju_result}")
