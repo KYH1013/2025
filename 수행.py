@@ -5,7 +5,7 @@ from datetime import datetime
 # ---------------------------
 # 페이지 설정
 # ---------------------------
-st.set_page_config(page_title="생일 정보 확인", layout="centered")
+st.set_page_config(page_title="생일 정보 확인", layout="wide")
 st.title("🎉 나의 생일 정보 확인 웹사이트")
 
 # ---------------------------
@@ -20,41 +20,51 @@ month1, day1, year1 = dob1.month, dob1.day, dob1.year
 tab1, tab2, tab3 = st.tabs(["📋 기본 정보", "🔮 사주 보기", "💞 종합 궁합"])
 
 # ---------------------------
+# 띠 궁합 데이터
+# ---------------------------
+ZODIAC_COMPATIBILITY = {
+    "쥐": {"좋음": ["용", "원숭이"], "안좋음": ["말", "양"]},
+    "소": {"좋음": ["뱀", "닭"], "안좋음": ["말", "양"]},
+    "호랑이": {"좋음": ["말", "개"], "안좋음": ["원숭이", "뱀"]},
+    "토끼": {"좋음": ["양", "돼지"], "안좋음": ["닭", "뱀"]},
+    "용": {"좋음": ["쥐", "원숭이"], "안좋음": ["토끼", "개"]},
+    "뱀": {"좋음": ["소", "닭"], "안좋음": ["호랑이", "돼지"]},
+    "말": {"좋음": ["호랑이", "개"], "안좋음": ["쥐", "소"]},
+    "양": {"좋음": ["토끼", "돼지"], "안좋음": ["쥐", "소"]},
+    "원숭이": {"좋음": ["쥐", "용"], "안좋음": ["호랑이", "토끼"]},
+    "닭": {"좋음": ["소", "뱀"], "안좋음": ["토끼", "돼지"]},
+    "개": {"좋음": ["호랑이", "말"], "안좋음": ["용", "원숭이"]},
+    "돼지": {"좋음": ["토끼", "양"], "안좋음": ["뱀", "닭"]}
+}
+
+# ---------------------------
 # 탭1: 기본 정보
 # ---------------------------
 with tab1:
     st.subheader(f"🎂 {dob1.strftime('%Y년 %m월 %d일')} 정보")
+
     col1, col2 = st.columns(2)
-    col3, col4 = st.columns(2)
 
-    # 탄생화
-    month_day_key1 = f"{month1:02d}-{day1:02d}"
-    flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(month_day_key1)
     with col1:
-        if flower:
-            st.markdown(f"<div style='background:#fffaf0; padding:15px; border-radius:15px; text-align:center;'>"
-                        f"<h3>🌸 탄생화</h3><p><b>{flower['name']}</b><br>의미: {flower['meaning']}</p></div>", 
-                        unsafe_allow_html=True)
+        with st.expander("🌸 탄생화", expanded=True, key="exp_flower"):
+            flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(f"{month1:02d}-{day1:02d}")
+            st.write(f"{flower['name']} - {flower['meaning']}" if flower else "정보 없음")
 
-    # 탄생석
-    stone = birthdata.BIRTH_STONES.get(month1)
+        with st.expander("💎 탄생석", expanded=True, key="exp_stone"):
+            stone = birthdata.BIRTH_STONES.get(month1)
+            st.write(f"{stone['name']} - {stone['meaning']}" if stone else "정보 없음")
+
     with col2:
-        if stone:
-            st.markdown(f"<div style='background:#f0ffff; padding:15px; border-radius:15px; text-align:center;'>"
-                        f"<h3>💎 탄생석</h3><p><b>{stone['name']}</b><br>의미: {stone['meaning']}</p></div>", 
-                        unsafe_allow_html=True)
+        with st.expander("✨ 별자리", expanded=True, key="exp_zodiac"):
+            sign, sign_emoji = birthdata.get_zodiac(month1, day1)
+            st.write(f"{sign} {sign_emoji}")
 
-    # 별자리
-    sign, sign_emoji = birthdata.get_zodiac(month1, day1)
-    with col3:
-        st.markdown(f"<div style='background:#f5f5f5; padding:15px; border-radius:15px; text-align:center;'>"
-                    f"<h3>✨ 별자리</h3><p><b>{sign}</b> {sign_emoji}</p></div>", unsafe_allow_html=True)
+        with st.expander("🐲 띠 & 궁합", expanded=True, key="exp_chinese"):
+            chinese_zodiac = birthdata.get_chinese_zodiac(year1)
+            compat = ZODIAC_COMPATIBILITY.get(chinese_zodiac, {"좋음": [], "안좋음": []})
+            st.write(f"{chinese_zodiac}\n💖 {', '.join(compat['좋음'])}\n💔 {', '.join(compat['안좋음'])}")
 
-    # 띠
-    chinese_zodiac = birthdata.get_chinese_zodiac(year1)
-    with col4:
-        st.markdown(f"<div style='background:#f0fff0; padding:15px; border-radius:15px; text-align:center;'>"
-                    f"<h3>🐲 띠</h3><p><b>{chinese_zodiac}</b></p></div>", unsafe_allow_html=True)
+    # 월별 기념일
 # ---------------------------
 # 사주 해석 + 오행 운세
 # ---------------------------
