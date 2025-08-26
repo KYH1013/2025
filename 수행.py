@@ -187,7 +187,7 @@ with tab2:
         )
     
     # 1번: 간단한 주간/월간 운세
-    st.markdown("### 📅 이번 주/이번 달 운세 (간단 룰 기반)")
+    st.markdown("### 📅 이번 주 운세")
     love, money, health, advice = simple_weekly_monthly_fortune(elements[0])
     st.write(f"💖 사랑운: {love}")
     st.write(f"💰 금전운: {money}")
