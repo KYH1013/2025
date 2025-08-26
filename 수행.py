@@ -100,12 +100,19 @@ def get_day_of_week(born):
     days = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"]
     return days[born.weekday()]
 
-def simple_weekly_monthly_fortune(elem):
-    # 간단 룰 기반 운세 생성
-    love = random.choice(["좋음", "보통", "주의"])
-    money = random.choice(["좋음", "보통", "주의"])
-    health = random.choice(["좋음", "보통", "주의"])
-    advice = ELEM_ADVICE.get(elem, "")
+def detailed_weekly_monthly_fortune(elem):
+    themes = {
+        "목": ["창의력", "성장", "도전"],
+        "화": ["열정", "활동성", "인간관계"],
+        "토": ["안정", "계획", "책임"],
+        "금": ["결단력", "목표", "재물"],
+        "수": ["지혜", "유연함", "학업"]
+    }
+    theme = random.choice(themes.get(elem, ["행운", "조심", "평범"]))
+    love = random.choice(["좋음 💖", "보통 💛", "주의 ⚠️"])
+    money = random.choice(["좋음 💰", "보통 💛", "주의 ⚠️"])
+    health = random.choice(["좋음 🩺", "보통 💛", "주의 ⚠️"])
+    advice = f"오늘은 '{theme}'을/를 중시하세요."
     return love, money, health, advice
 
 # ---------------------------
@@ -151,24 +158,24 @@ with tab1:
         with st.expander("🌸 탄생화", expanded=True):
             flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(f"{dob1.month:02d}-{dob1.day:02d}")
             if flower:
-                st.write(f"{flower['name']} - {flower['meaning']}")
+                st.markdown(f"<div style='padding:10px; border-radius:10px; background-color:#fff0f5'>{flower['name']} - {flower['meaning']}</div>", unsafe_allow_html=True)
             else:
                 st.write("정보 없음")
         with st.expander("💎 탄생석", expanded=True):
             stone = birthdata.BIRTH_STONES.get(dob1.month)
             if stone:
-                st.write(f"{stone['name']} - {stone['meaning']}")
+                st.markdown(f"<div style='padding:10px; border-radius:10px; background-color:#fff0f5'>{stone['name']} - {stone['meaning']}</div>", unsafe_allow_html=True)
             else:
                 st.write("정보 없음")
     
     with col2:
         with st.expander("✨ 별자리", expanded=True):
             sign, sign_emoji = birthdata.get_zodiac(dob1.month, dob1.day)
-            st.write(f"{sign} {sign_emoji}")
+            st.markdown(f"<div style='padding:10px; border-radius:10px; background-color:#fff0f5'>{sign} {sign_emoji}</div>", unsafe_allow_html=True)
         with st.expander("🐲 띠 & 궁합", expanded=True):
             chinese_zodiac, zodiac_name = get_chinese_zodiac(dob1.year)
             compat = ZODIAC_COMPATIBILITY.get(zodiac_name, {"좋음": [], "안좋음": []})
-            st.write(f"{chinese_zodiac}\n💖 {', '.join(compat['좋음'])}\n💔 {', '.join(compat['안좋음'])}")
+            st.markdown(f"<div style='padding:10px; border-radius:10px; background-color:#fff0f5'>{chinese_zodiac}<br>💖 {', '.join(compat['좋음'])}<br>💔 {', '.join(compat['안좋음'])}</div>", unsafe_allow_html=True)
 
 # ---------------------------
 # 탭2: 사주 해석 + 운세
@@ -177,22 +184,25 @@ with tab2:
     st.subheader("🔮 사주 해석 & 운세")
     elements, branches = saju_elements(dob1)
     
-    for branch, elem in zip(branches, elements):
-        st.markdown(
-            f"<div style='padding:15px; border-radius:15px; background-color:{ELEM_COLORS[elem]}; margin-bottom:10px;'>"
-            f"<h4 style='text-align:center;'>{branch} ({elem})</h4>"
-            f"<p style='text-align:center;'>{ELEM_ADVICE[elem]}</p>"
+    col1, col2, col3 = st.columns(3)
+    for i, (branch, elem) in enumerate(zip(branches, elements)):
+        col = [col1, col2, col3][i]
+        col.markdown(
+            f"<div style='padding:15px; border-radius:15px; background-color:{ELEM_COLORS[elem]}; margin-bottom:10px; text-align:center;'>"
+            f"<h4>{branch} ({elem})</h4>"
+            f"<p>{ELEM_ADVICE[elem]}</p>"
             f"</div>",
             unsafe_allow_html=True
         )
     
-    # 1번: 간단한 주간/월간 운세
-    st.markdown("### 📅 이번 주 운세")
-    love, money, health, advice = simple_weekly_monthly_fortune(elements[0])
-    st.write(f"💖 사랑운: {love}")
-    st.write(f"💰 금전운: {money}")
-    st.write(f"🩺 건강운: {health}")
-    st.write(f"🌟 오늘의 조언: {advice}")
+    # 디테일 운세
+    st.markdown("### 📅 이번 주/이번 달 운세 (오행별 디테일)")
+    if st.button("🎲 운세 새로고침"):
+        love, money, health, advice = detailed_weekly_monthly_fortune(elements[0])
+        st.write(f"💖 사랑운: {love}")
+        st.write(f"💰 금전운: {money}")
+        st.write(f"🩺 건강운: {health}")
+        st.write(f"🌟 오늘의 조언: {advice}")
 
 # ---------------------------
 # 탭3: 종합 궁합
