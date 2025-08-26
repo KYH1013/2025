@@ -97,7 +97,6 @@ with tab2:
     # ---------------------------
     # 간단 사주 요소
     # ---------------------------
-    # 연지, 월지, 일지 오행 추출 (간단 예시)
     TWELVE_EARTHLY_BRANCHES = ["자","축","인","묘","진","사","오","미","신","유","술","해"]
     BRANCH_TO_ELEM = {"자":"수","축":"토","인":"목","묘":"목","진":"토","사":"화",
                       "오":"화","미":"토","신":"금","유":"금","술":"토","해":"수"}
@@ -105,6 +104,17 @@ with tab2:
     year_branch = TWELVE_EARTHLY_BRANCHES[(year - 4) % 12]
     month_branch = TWELVE_EARTHLY_BRANCHES[(month + 1) % 12]
     day_branch = TWELVE_EARTHLY_BRANCHES[(day - 1) % 12]
+
+    # ---------------------------
+    # 오행 조언
+    # ---------------------------
+    ELEM_ADVICE = {
+        "목": "창의력과 성장을 중시하세요. 새로운 도전이 행운을 가져옵니다.",
+        "화": "열정과 활동성을 살리세요. 인간관계와 의사소통이 중요합니다.",
+        "토": "안정과 책임을 중시하세요. 계획을 세우고 차분히 진행하세요.",
+        "금": "결단력과 자기주장을 발휘하세요. 목표 설정이 성공의 열쇠입니다.",
+        "수": "지혜와 유연함을 살리세요. 학문, 공부, 정보 습득에 집중하세요."
+    }
 
     elements = [BRANCH_TO_ELEM[year_branch], BRANCH_TO_ELEM[month_branch], BRANCH_TO_ELEM[day_branch]]
 
@@ -122,24 +132,15 @@ with tab2:
     )
 
     # ---------------------------
-    # 해석 텍스트
+    # 오행 해석 + 조언
     # ---------------------------
-    # 간단 예시
-    elem_meaning = {
-        "목":"성장, 창의, 진취",
-        "화":"열정, 활동, 인간관계",
-        "토":"안정, 책임, 인내",
-        "금":"결단, 재능, 자기주장",
-        "수":"지혜, 유연, 학문"
-    }
-
     st.markdown(
-        f"<div style='padding:15px; border-radius:15px; background-color:#f0f8ff;'>"
-        f"<h4>🌟 사주 오행 해석</h4>"
+        f"<div style='padding:15px; border-radius:15px; background-color:#e6f7ff;'>"
+        f"<h4>🌟 사주 오행 해석 & 조언</h4>"
         f"<ul>"
-        f"<li>연지({year_branch}) - {elem_meaning[BRANCH_TO_ELEM[year_branch]]}</li>"
-        f"<li>월지({month_branch}) - {elem_meaning[BRANCH_TO_ELEM[month_branch]]}</li>"
-        f"<li>일지({day_branch}) - {elem_meaning[BRANCH_TO_ELEM[day_branch]]}</li>"
+        f"<li>연지({year_branch}) - {BRANCH_TO_ELEM[year_branch]}: {ELEM_ADVICE[BRANCH_TO_ELEM[year_branch]]}</li>"
+        f"<li>월지({month_branch}) - {BRANCH_TO_ELEM[month_branch]}: {ELEM_ADVICE[BRANCH_TO_ELEM[month_branch]]}</li>"
+        f"<li>일지({day_branch}) - {BRANCH_TO_ELEM[day_branch]}: {ELEM_ADVICE[BRANCH_TO_ELEM[day_branch]]}</li>"
         f"</ul>"
         f"</div>",
         unsafe_allow_html=True
