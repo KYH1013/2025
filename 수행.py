@@ -1,27 +1,16 @@
 import streamlit as st
-import birthdata.py
+import birthdata
 from datetime import datetime
 
 # ---------------------------
-# 페이지 설정
+# CHINESE ZODIAC & Compatibility
 # ---------------------------
-st.set_page_config(page_title="생일 정보 확인", layout="wide")
-st.title("🎉 나의 생일 정보 확인 웹사이트")
+CHINESE_ZODIAC = [
+    "쥐띠 🐭", "소띠 🐮", "호랑이띠 🐯", "토끼띠 🐰",
+    "용띠 🐲", "뱀띠 🐍", "말띠 🐴", "양띠 🐑",
+    "원숭이띠 🐵", "닭띠 🐔", "개띠 🐶", "돼지띠 🐷"
+]
 
-# ---------------------------
-# 첫 번째 생일 입력
-# ---------------------------
-dob1 = st.date_input("첫 번째 생년월일 선택", datetime(2000,1,1), key="dob1")
-month1, day1, year1 = dob1.month, dob1.day, dob1.year
-
-# ---------------------------
-# 탭 생성
-# ---------------------------
-tab1, tab2, tab3 = st.tabs(["📋 기본 정보", "🔮 사주 보기", "💞 종합 궁합"])
-
-# ---------------------------
-# 띠 궁합 데이터
-# ---------------------------
 ZODIAC_COMPATIBILITY = {
     "쥐": {"좋음": ["용", "원숭이"], "안좋음": ["말", "양"]},
     "소": {"좋음": ["뱀", "닭"], "안좋음": ["말", "양"]},
@@ -38,47 +27,61 @@ ZODIAC_COMPATIBILITY = {
 }
 
 # ---------------------------
+# 페이지 설정
+# ---------------------------
+st.set_page_config(page_title="생일 정보 확인", layout="centered")
+st.title("🎉 나의 생일 정보 확인 웹사이트")
+
+# ---------------------------
+# 첫 번째 생일 입력
+# ---------------------------
+dob1 = st.date_input("첫 번째 생년월일 선택", datetime(2000,1,1), key="dob1")
+month1, day1, year1 = dob1.month, dob1.day, dob1.year
+
+# ---------------------------
+# 탭 생성
+# ---------------------------
+tab1, tab2, tab3 = st.tabs(["📋 기본 정보", "🔮 사주 보기", "💞 종합 궁합"])
+
+# ---------------------------
 # 탭1: 기본 정보
 # ---------------------------
 with tab1:
     st.subheader(f"🎂 {dob1.strftime('%Y년 %m월 %d일')} 정보")
 
+    # 2*2 카드 배열
     col1, col2 = st.columns(2)
-
+    
     with col1:
         # 탄생화
-        flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(f"{month1:02d}-{day1:02d}")
-        with st.expander("🌸 탄생화"):
+        with st.expander("🌸 탄생화", expanded=True):
+            month_day_key = f"{month1:02d}-{day1:02d}"
+            flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(month_day_key)
             if flower:
                 st.write(f"{flower['name']} - {flower['meaning']}")
             else:
                 st.write("정보 없음")
 
         # 탄생석
-        stone = birthdata.BIRTH_STONES.get(month1)
-        with st.expander("💎 탄생석"):
+        with st.expander("💎 탄생석", expanded=True):
+            stone = birthdata.BIRTH_STONES.get(month1)
             if stone:
                 st.write(f"{stone['name']} - {stone['meaning']}")
             else:
                 st.write("정보 없음")
-
+    
     with col2:
         # 별자리
-        sign, sign_emoji = birthdata.get_zodiac(month1, day1)
-        with st.expander("✨ 별자리"):
+        with st.expander("✨ 별자리", expanded=True):
+            sign, sign_emoji = birthdata.get_zodiac(month1, day1)
             st.write(f"{sign} {sign_emoji}")
-    with col2:
+        
         # 띠 & 궁합
-       with st.expander("🐲 띠 & 궁합"):
-            # dob1.year 기준으로 띠 계산
-            chinese_zodiac = CHINESE_ZODIAC[(dob1.year - 4) % 12]
-    
-            # 띠 이름만 추출해서 궁합 참조
+        with st.expander("🐲 띠 & 궁합", expanded=True):
+            chinese_zodiac = CHINESE_ZODIAC[(year1 - 4) % 12]
             zodiac_name = chinese_zodiac[:chinese_zodiac.find("띠")]
             compat = ZODIAC_COMPATIBILITY.get(zodiac_name, {"좋음": [], "안좋음": []})
-    
             st.write(f"{chinese_zodiac}\n💖 {', '.join(compat['좋음'])}\n💔 {', '.join(compat['안좋음'])}")
-
 
     # 월별 기념일
 # ---------------------------
