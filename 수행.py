@@ -70,9 +70,9 @@ with tab1:
     with col2:
         # 띠 & 궁합
         with st.expander("🐲 띠 & 궁합"):
-        chinese_zodiac = birthdata.get_chinese_zodiac(dob1.year)  # 매번 dob1.year 기준
-        compat = ZODIAC_COMPATIBILITY.get(chinese_zodiac, {"좋음": [], "안좋음": []})
-        st.write(f"{chinese_zodiac}\n💖 {', '.join(compat['좋음'])}\n💔 {', '.join(compat['안좋음'])}")
+            chinese_zodiac = birthdata.get_chinese_zodiac(dob1.year)  # 매번 dob1.year 기준
+            compat = ZODIAC_COMPATIBILITY.get(chinese_zodiac, {"좋음": [], "안좋음": []})
+            st.write(f"{chinese_zodiac}\n💖 {', '.join(compat['좋음'])}\n💔 {', '.join(compat['안좋음'])}")
 
 
     # 월별 기념일
