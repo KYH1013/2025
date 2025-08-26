@@ -65,13 +65,12 @@ with tab2:
     ji  = ["자","축","인","묘","진","사","오","미","신","유","술","해"]
 
     # 연/월/일 사주 계산
-    year_gan = gan[(year - 4) % 10]
-    year_ji  = ji[(year - 4) % 12]
-    month_gan = gan[(month + year) % 10]
-    month_ji  = ji[(month + year) % 12]
-    day_gan = gan[(day + year) % 10]
-    day_ji  = ji[(day + month) % 12]
-
+    year_gan = gan[(year1 - 4) % 10]
+    year_ji  = ji[(year1 - 4) % 12]
+    month_gan = gan[(month1 + year1) % 10]
+    month_ji  = ji[(month1 + year1) % 12]
+    day_gan = gan[(day1 + year1) % 10]
+    day_ji  = ji[(day1 + month1) % 12]
     saju_text = f"{year_gan}{year_ji}년 {month_gan}{month_ji}월 {day_gan}{day_ji}일"
 
     st.markdown(f"""
