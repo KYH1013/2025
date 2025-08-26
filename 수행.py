@@ -156,15 +156,12 @@ with tab3:
     # 1. 띠 궁합
     # ---------------------------
     st.markdown("### 🐲 띠 궁합")
-    # 첫 번째 사람 띠
     chinese_zodiac1 = CHINESE_ZODIAC[(dob1.year - 4) % 12]
     zodiac_name1 = chinese_zodiac1[:chinese_zodiac1.find("띠")]
-    # 두 번째 사람 띠
     chinese_zodiac2 = CHINESE_ZODIAC[(dob2.year - 4) % 12]
     zodiac_name2 = chinese_zodiac2[:chinese_zodiac2.find("띠")]
 
     compat1 = ZODIAC_COMPATIBILITY.get(zodiac_name1, {"좋음": [], "안좋음": []})
-    # 두 사람 띠 궁합
     if zodiac_name2 in compat1["좋음"]:
         zodiac_result = f"💖 좋은 궁합: {chinese_zodiac1} × {chinese_zodiac2}"
     elif zodiac_name2 in compat1["안좋음"]:
@@ -175,25 +172,39 @@ with tab3:
     st.write(zodiac_result)
 
     # ---------------------------
-    # 2. 사주 궁합 (간단 오행 기반)
+    # 2. 사주 궁합 (오행 기반)
     # ---------------------------
-    st.markdown("### 🔮 사주 궁합 (간단 오행 기반)")
+    st.markdown("### 🔮 사주 궁합 (오행 기반)")
+
+    # 오행 계산용 데이터
+    TEN_HEAVENLY_STEMS = ["갑","을","병","정","무","기","경","신","임","계"]
+    TWELVE_EARTHLY_BRANCHES = ["자","축","인","묘","진","사","오","미","신","유","술","해"]
+    BRANCH_TO_ELEM = {"자":"수","축":"토","인":"목","묘":"목","진":"토","사":"화",
+                      "오":"화","미":"토","신":"금","유":"금","술":"토","해":"수"}
+    ELEMS_SUPPORT = {"목":"화","화":"토","토":"금","금":"수","수":"목"}
+    ELEMS_CONFLICT = {"목":"금","화":"수","토":"목","금":"화","수":"화"}
+
+    def saju_elements(dob):
+        year_branch = TWELVE_EARTHLY_BRANCHES[(dob.year - 4) % 12]
+        month_branch = TWELVE_EARTHLY_BRANCHES[(dob.month + 1) % 12]
+        day_branch = TWELVE_EARTHLY_BRANCHES[(dob.day - 1) % 12]
+        elements = [BRANCH_TO_ELEM[year_branch], BRANCH_TO_ELEM[month_branch], BRANCH_TO_ELEM[day_branch]]
+        return elements
 
     def calculate_saju_compat(dob1, dob2):
-        """
-        간단 예시: 연,월,일 기반 오행 점수 계산
-        실제 오행 궁합 알고리즘은 더 복잡하게 구현 가능
-        """
-        # 예시 계산: (연도 마지막 자리 * 3 + 월 * 2 + 일) % 100
-        score1 = ((dob1.year % 10) * 3 + dob1.month * 2 + dob1.day) % 100
-        score2 = ((dob2.year % 10) * 3 + dob2.month * 2 + dob2.day) % 100
-        # 두 점수 차이가 작을수록 궁합이 좋다고 가정
-        score = 100 - abs(score1 - score2)
+        elems1 = saju_elements(dob1)
+        elems2 = saju_elements(dob2)
+        score = 50  # 기본 점수
+        for e1, e2 in zip(elems1, elems2):
+            if ELEMS_SUPPORT.get(e1) == e2:
+                score += 15
+            elif ELEMS_CONFLICT.get(e1) == e2:
+                score -= 15
+        score = max(0, min(100, score))
         return score
 
     saju_score = calculate_saju_compat(dob1, dob2)
 
-    # 점수별 해석
     if saju_score >= 70:
         saju_result = "궁합이 매우 좋음 💖💖💖"
     elif saju_score >= 40:
@@ -201,7 +212,6 @@ with tab3:
     else:
         saju_result = "궁합이 낮음 💔💔💔"
 
-    # 카드 형식으로 표시
     st.markdown(
         f"<div style='padding:20px; border-radius:10px; background-color:#f0f8ff; text-align:center;'>"
         f"<h3>사주 점수: {saju_score}/100</h3>"
