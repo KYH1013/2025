@@ -99,7 +99,7 @@ def months_days_since_birth(born):
 # 페이지 설정
 # ---------------------------
 st.set_page_config(page_title="생일 정보 확인", layout="centered")
-st.title("🎉 나의 생일 정보 확인 웹사이트")
+st.title("🎉 알쓸생정(알아도 쓸모없는 생일 잡정보)")
 
 # 오늘 날짜
 today = datetime.today()
