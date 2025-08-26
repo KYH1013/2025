@@ -1,8 +1,6 @@
 import streamlit as st
 st.cache_data.clear()
 st.cache_resource.clear()
-
-import streamlit as st
 import birthdata
 from datetime import datetime
 
