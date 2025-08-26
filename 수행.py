@@ -73,10 +73,13 @@ def calculate_saju_compat(dob1, dob2):
 st.set_page_config(page_title="생일 정보 확인", layout="centered")
 st.title("🎉 나의 생일 정보 확인 웹사이트")
 
+# 오늘 날짜
+today = datetime.today()
+
 # ---------------------------
 # 첫 번째 생일 입력
 # ---------------------------
-dob1 = st.date_input("첫 번째 생년월일 선택", datetime(2000,1,1), key="dob1")
+dob1 = st.date_input("첫 번째 생년월일 선택", today, key="dob1")
 month1, day1, year1 = dob1.month, dob1.day, dob1.year
 
 # ---------------------------
@@ -135,7 +138,7 @@ with tab2:
 # ---------------------------
 with tab3:
     st.subheader("💞 종합 궁합")
-    dob2 = st.date_input("두 번째 생년월일 선택", datetime(2000,1,1), key="dob2")
+    dob2 = st.date_input("두 번째 생년월일 선택", today, key="dob2")
     
     # 띠 궁합
     cz1, zn1 = get_chinese_zodiac(dob1.year)
