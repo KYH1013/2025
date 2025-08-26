@@ -70,9 +70,14 @@ with tab1:
     with col2:
         # 띠 & 궁합
        with st.expander("🐲 띠 & 궁합"):
-        chinese_zodiac = CHINESE_ZODIAC[(dob1.year - 4) % 12]
-        compat = ZODIAC_COMPATIBILITY.get(chinese_zodiac[:chinese_zodiac.find("띠")], {"좋음": [], "안좋음": []})
-        st.write(f"{chinese_zodiac}\n💖 {', '.join(compat['좋음'])}\n💔 {', '.join(compat['안좋음'])}")
+            # dob1.year 기준으로 띠 계산
+            chinese_zodiac = CHINESE_ZODIAC[(dob1.year - 4) % 12]
+    
+            # 띠 이름만 추출해서 궁합 참조
+            zodiac_name = chinese_zodiac[:chinese_zodiac.find("띠")]
+            compat = ZODIAC_COMPATIBILITY.get(zodiac_name, {"좋음": [], "안좋음": []})
+    
+            st.write(f"{chinese_zodiac}\n💖 {', '.join(compat['좋음'])}\n💔 {', '.join(compat['안좋음'])}")
 
 
     # 월별 기념일
