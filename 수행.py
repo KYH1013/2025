@@ -186,7 +186,22 @@ with tab3:
     # -----------------------
     st.markdown(f"<div style='background:#fffaf0; padding:20px; border-radius:15px; text-align:center;'>"
                 f"<h3>종합 궁합 점수: {score}</h3>"
-                f"<p style='font-size:18px;'>{message}</p></div>", unsafe_allow_html=True)
+                # -----------------------
+# 카드형 UI 출력 (점수 + 기준)
+# -----------------------
+st.markdown(f"""
+<div style='background:#fffaf0; padding:20px; border-radius:15px; text-align:center;'>
+    <h3>💞 종합 궁합 점수: {score} / 10</h3>
+    <p style='font-size:16px;'>점수 기준:</p>
+    <ul style='text-align:left; display:inline-block;'>
+        <li>🌟 8-10점: 매우 좋은 궁합</li>
+        <li>🙂 5-7점: 꽤 좋은 궁합</li>
+        <li>⚠️ 0-4점: 주의 필요</li>
+    </ul>
+    <p style='font-size:18px; margin-top:10px;'>{message}</p>
+</div>
+""", unsafe_allow_html=True)
+
 
     st.markdown("<h4>📌 상세 비교</h4>", unsafe_allow_html=True)
     for detail in details:
