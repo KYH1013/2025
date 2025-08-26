@@ -1,10 +1,4 @@
-import streamlit as st
-
-st.set_page_config(page_title="테스트", layout="centered")
-
-st.title("✅ 코드 반영 테스트")
-
-st.write("이 문장이 보이면 `수행.py`가 제대로 실행되고 있습니다!")
+streamlit run 수행.py
 
 import streamlit as st
 import birthdata
