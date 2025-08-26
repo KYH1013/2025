@@ -3,7 +3,7 @@ import birthdata
 from datetime import datetime
 
 # ---------------------------
-# CHINESE ZODIAC & Compatibility
+# 상수 정의
 # ---------------------------
 CHINESE_ZODIAC = [
     "쥐띠 🐭", "소띠 🐮", "호랑이띠 🐯", "토끼띠 🐰",
@@ -25,6 +25,47 @@ ZODIAC_COMPATIBILITY = {
     "개": {"좋음": ["호랑이", "말"], "안좋음": ["용", "원숭이"]},
     "돼지": {"좋음": ["토끼", "양"], "안좋음": ["뱀", "닭"]}
 }
+
+TWELVE_EARTHLY_BRANCHES = ["자","축","인","묘","진","사","오","미","신","유","술","해"]
+BRANCH_TO_ELEM = {"자":"수","축":"토","인":"목","묘":"목","진":"토","사":"화",
+                  "오":"화","미":"토","신":"금","유":"금","술":"토","해":"수"}
+ELEM_COLORS = {"목":"#b0f2b6","화":"#ffb3b3","토":"#f0e68c","금":"#d1d1d1","수":"#a0c4ff"}
+ELEM_ADVICE = {
+    "목": "창의력과 성장을 중시하세요. 새로운 도전이 행운을 가져옵니다.",
+    "화": "열정과 활동성을 살리세요. 인간관계와 의사소통이 중요합니다.",
+    "토": "안정과 책임을 중시하세요. 계획을 세우고 차분히 진행하세요.",
+    "금": "결단력과 자기주장을 발휘하세요. 목표 설정이 성공의 열쇠입니다.",
+    "수": "지혜와 유연함을 살리세요. 학문, 공부, 정보 습득에 집중하세요."
+}
+ELEMS_SUPPORT = {"목":"화","화":"토","토":"금","금":"수","수":"목"}
+ELEMS_CONFLICT = {"목":"금","화":"수","토":"목","금":"화","수":"화"}
+
+# ---------------------------
+# 공통 함수
+# ---------------------------
+def get_chinese_zodiac(year):
+    zodiac = CHINESE_ZODIAC[(year - 4) % 12]
+    zodiac_name = zodiac.replace("띠", "").split()[0]
+    return zodiac, zodiac_name
+
+def saju_elements(dob):
+    year_branch = TWELVE_EARTHLY_BRANCHES[(dob.year - 4) % 12]
+    month_branch = TWELVE_EARTHLY_BRANCHES[(dob.month + 1) % 12]
+    day_branch = TWELVE_EARTHLY_BRANCHES[(dob.day - 1) % 12]
+    elements = [BRANCH_TO_ELEM[year_branch], BRANCH_TO_ELEM[month_branch], BRANCH_TO_ELEM[day_branch]]
+    return elements, [year_branch, month_branch, day_branch]
+
+def calculate_saju_compat(dob1, dob2):
+    elems1, _ = saju_elements(dob1)
+    elems2, _ = saju_elements(dob2)
+    score = 50
+    for e1, e2 in zip(elems1, elems2):
+        if ELEMS_SUPPORT.get(e1) == e2:
+            score += 15
+        elif ELEMS_CONFLICT.get(e1) == e2:
+            score -= 15
+    score = max(0, min(100, score))
+    return score
 
 # ---------------------------
 # 페이지 설정
@@ -48,21 +89,15 @@ tab1, tab2, tab3 = st.tabs(["📋 기본 정보", "🔮 사주 보기", "💞 �
 # ---------------------------
 with tab1:
     st.subheader(f"🎂 {dob1.strftime('%Y년 %m월 %d일')} 정보")
-
-    # 2*2 카드 배열
     col1, col2 = st.columns(2)
     
     with col1:
-        # 탄생화
         with st.expander("🌸 탄생화", expanded=True):
-            month_day_key = f"{month1:02d}-{day1:02d}"
-            flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(month_day_key)
+            flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(f"{month1:02d}-{day1:02d}")
             if flower:
                 st.write(f"{flower['name']} - {flower['meaning']}")
             else:
                 st.write("정보 없음")
-
-        # 탄생석
         with st.expander("💎 탄생석", expanded=True):
             stone = birthdata.BIRTH_STONES.get(month1)
             if stone:
@@ -71,153 +106,58 @@ with tab1:
                 st.write("정보 없음")
     
     with col2:
-        # 별자리
         with st.expander("✨ 별자리", expanded=True):
             sign, sign_emoji = birthdata.get_zodiac(month1, day1)
             st.write(f"{sign} {sign_emoji}")
-        
-        # 띠 & 궁합
         with st.expander("🐲 띠 & 궁합", expanded=True):
-            chinese_zodiac = CHINESE_ZODIAC[(year1 - 4) % 12]
-            zodiac_name = chinese_zodiac[:chinese_zodiac.find("띠")]
+            chinese_zodiac, zodiac_name = get_chinese_zodiac(year1)
             compat = ZODIAC_COMPATIBILITY.get(zodiac_name, {"좋음": [], "안좋음": []})
             st.write(f"{chinese_zodiac}\n💖 {', '.join(compat['좋음'])}\n💔 {', '.join(compat['안좋음'])}")
 
-    # 월별 기념일
 # ---------------------------
-# 사주 해석 + 오행 운세
+# 탭2: 사주 해석
 # ---------------------------
 with tab2:
     st.subheader("🔮 사주 해석")
-
-    # 첫 번째 생일 입력 기준
-    dob = dob1
-    year, month, day = dob.year, dob.month, dob.day
-
-    # ---------------------------
-    # 간단 사주 요소
-    # ---------------------------
-    TWELVE_EARTHLY_BRANCHES = ["자","축","인","묘","진","사","오","미","신","유","술","해"]
-    BRANCH_TO_ELEM = {"자":"수","축":"토","인":"목","묘":"목","진":"토","사":"화",
-                      "오":"화","미":"토","신":"금","유":"금","술":"토","해":"수"}
-
-    year_branch = TWELVE_EARTHLY_BRANCHES[(year - 4) % 12]
-    month_branch = TWELVE_EARTHLY_BRANCHES[(month + 1) % 12]
-    day_branch = TWELVE_EARTHLY_BRANCHES[(day - 1) % 12]
-
-    # ---------------------------
-    # 오행 조언
-    # ---------------------------
-    ELEM_ADVICE = {
-        "목": "창의력과 성장을 중시하세요. 새로운 도전이 행운을 가져옵니다.",
-        "화": "열정과 활동성을 살리세요. 인간관계와 의사소통이 중요합니다.",
-        "토": "안정과 책임을 중시하세요. 계획을 세우고 차분히 진행하세요.",
-        "금": "결단력과 자기주장을 발휘하세요. 목표 설정이 성공의 열쇠입니다.",
-        "수": "지혜와 유연함을 살리세요. 학문, 공부, 정보 습득에 집중하세요."
-    }
-
-    elements = [BRANCH_TO_ELEM[year_branch], BRANCH_TO_ELEM[month_branch], BRANCH_TO_ELEM[day_branch]]
-
-    # ---------------------------
-    # 카드형식 UI
-    # ---------------------------
-    st.markdown(
-        f"<div style='padding:20px; border-radius:15px; background-color:#fffaf0; margin-bottom:15px;'>"
-        f"<h3 style='text-align:center;'>📅 생일: {dob.strftime('%Y년 %m월 %d일')}</h3>"
-        f"<p style='text-align:center;'>연지: {year_branch} ({BRANCH_TO_ELEM[year_branch]})</p>"
-        f"<p style='text-align:center;'>월지: {month_branch} ({BRANCH_TO_ELEM[month_branch]})</p>"
-        f"<p style='text-align:center;'>일지: {day_branch} ({BRANCH_TO_ELEM[day_branch]})</p>"
-        f"</div>",
-        unsafe_allow_html=True
-    )
-
-    # ---------------------------
-    # 오행 해석 + 조언
-    # ---------------------------
-    st.markdown(
-        f"<div style='padding:15px; border-radius:15px; background-color:#e6f7ff;'>"
-        f"<h4>🌟 사주 오행 해석 & 조언</h4>"
-        f"<ul>"
-        f"<li>연지({year_branch}) - {BRANCH_TO_ELEM[year_branch]}: {ELEM_ADVICE[BRANCH_TO_ELEM[year_branch]]}</li>"
-        f"<li>월지({month_branch}) - {BRANCH_TO_ELEM[month_branch]}: {ELEM_ADVICE[BRANCH_TO_ELEM[month_branch]]}</li>"
-        f"<li>일지({day_branch}) - {BRANCH_TO_ELEM[day_branch]}: {ELEM_ADVICE[BRANCH_TO_ELEM[day_branch]]}</li>"
-        f"</ul>"
-        f"</div>",
-        unsafe_allow_html=True
-    )
+    elements, branches = saju_elements(dob1)
+    
+    for branch, elem in zip(branches, elements):
+        st.markdown(
+            f"<div style='padding:15px; border-radius:15px; background-color:{ELEM_COLORS[elem]}; margin-bottom:10px;'>"
+            f"<h4 style='text-align:center;'>{branch} ({elem})</h4>"
+            f"<p style='text-align:center;'>{ELEM_ADVICE[elem]}</p>"
+            f"</div>",
+            unsafe_allow_html=True
+        )
 
 # ---------------------------
 # 탭3: 종합 궁합
 # ---------------------------
 with tab3:
     st.subheader("💞 종합 궁합")
-
-    # ---------------------------
-    # 두 번째 생일 입력
-    # ---------------------------
     dob2 = st.date_input("두 번째 생년월일 선택", datetime(2000,1,1), key="dob2")
-    month2, day2, year2 = dob2.month, dob2.day, dob2.year
-
-    # ---------------------------
-    # 1. 띠 궁합
-    # ---------------------------
-    st.markdown("### 🐲 띠 궁합")
-    chinese_zodiac1 = CHINESE_ZODIAC[(dob1.year - 4) % 12]
-    zodiac_name1 = chinese_zodiac1[:chinese_zodiac1.find("띠")]
-    chinese_zodiac2 = CHINESE_ZODIAC[(dob2.year - 4) % 12]
-    zodiac_name2 = chinese_zodiac2[:chinese_zodiac2.find("띠")]
-
-    compat1 = ZODIAC_COMPATIBILITY.get(zodiac_name1, {"좋음": [], "안좋음": []})
-    if zodiac_name2 in compat1["좋음"]:
-        zodiac_result = f"💖 좋은 궁합: {chinese_zodiac1} × {chinese_zodiac2}"
-    elif zodiac_name2 in compat1["안좋음"]:
-        zodiac_result = f"💔 안 좋은 궁합: {chinese_zodiac1} × {chinese_zodiac2}"
+    
+    # 띠 궁합
+    cz1, zn1 = get_chinese_zodiac(dob1.year)
+    cz2, zn2 = get_chinese_zodiac(dob2.year)
+    compat1 = ZODIAC_COMPATIBILITY.get(zn1, {"좋음": [], "안좋음": []})
+    if zn2 in compat1["좋음"]:
+        zodiac_result = f"💖 좋은 궁합: {cz1} × {cz2}"
+    elif zn2 in compat1["안좋음"]:
+        zodiac_result = f"💔 안 좋은 궁합: {cz1} × {cz2}"
     else:
-        zodiac_result = f"💛 보통 궁합: {chinese_zodiac1} × {chinese_zodiac2}"
-
-    st.write(zodiac_result)
-
-    # ---------------------------
-    # 2. 사주 궁합 (오행 기반)
-    # ---------------------------
-    st.markdown("### 🔮 사주 궁합 (오행 기반)")
-
-    # 오행 계산용 데이터
-    TEN_HEAVENLY_STEMS = ["갑","을","병","정","무","기","경","신","임","계"]
-    TWELVE_EARTHLY_BRANCHES = ["자","축","인","묘","진","사","오","미","신","유","술","해"]
-    BRANCH_TO_ELEM = {"자":"수","축":"토","인":"목","묘":"목","진":"토","사":"화",
-                      "오":"화","미":"토","신":"금","유":"금","술":"토","해":"수"}
-    ELEMS_SUPPORT = {"목":"화","화":"토","토":"금","금":"수","수":"목"}
-    ELEMS_CONFLICT = {"목":"금","화":"수","토":"목","금":"화","수":"화"}
-
-    def saju_elements(dob):
-        year_branch = TWELVE_EARTHLY_BRANCHES[(dob.year - 4) % 12]
-        month_branch = TWELVE_EARTHLY_BRANCHES[(dob.month + 1) % 12]
-        day_branch = TWELVE_EARTHLY_BRANCHES[(dob.day - 1) % 12]
-        elements = [BRANCH_TO_ELEM[year_branch], BRANCH_TO_ELEM[month_branch], BRANCH_TO_ELEM[day_branch]]
-        return elements
-
-    def calculate_saju_compat(dob1, dob2):
-        elems1 = saju_elements(dob1)
-        elems2 = saju_elements(dob2)
-        score = 50  # 기본 점수
-        for e1, e2 in zip(elems1, elems2):
-            if ELEMS_SUPPORT.get(e1) == e2:
-                score += 15
-            elif ELEMS_CONFLICT.get(e1) == e2:
-                score -= 15
-        score = max(0, min(100, score))
-        return score
-
+        zodiac_result = f"💛 보통 궁합: {cz1} × {cz2}"
+    st.markdown(f"<div style='padding:15px; border-radius:10px; background-color:#fff0f5; text-align:center;'>{zodiac_result}</div>", unsafe_allow_html=True)
+    
+    # 사주 궁합
     saju_score = calculate_saju_compat(dob1, dob2)
-
     if saju_score >= 70:
         saju_result = "궁합이 매우 좋음 💖💖💖"
     elif saju_score >= 40:
         saju_result = "궁합이 보통 💛💛"
     else:
         saju_result = "궁합이 낮음 💔💔💔"
-
+    
     st.markdown(
         f"<div style='padding:20px; border-radius:10px; background-color:#f0f8ff; text-align:center;'>"
         f"<h3>사주 점수: {saju_score}/100</h3>"
