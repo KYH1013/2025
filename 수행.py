@@ -62,24 +62,24 @@ if dob:
             </div>
             """, unsafe_allow_html=True)
 
-    with tab2:
-        st.subheader("🔮 사주 풀이 (생시 제외)")
+        with tab2:
+            st.subheader("🔮 사주 풀이 (생시 제외)")
 
-        # 사주 예시 (연월일만 사용)
-        gan = ["갑", "을", "병", "정", "무", "기", "경", "신", "임", "계"]
-        ji = ["자", "축", "인", "묘", "진", "사", "오", "미", "신", "유", "술", "해"]
+            # 사주 예시 (연월일만 사용)
+            gan = ["갑", "을", "병", "정", "무", "기", "경", "신", "임", "계"]
+            ji = ["자", "축", "인", "묘", "진", "사", "오", "미", "신", "유", "술", "해"]
 
-        year_gan = gan[(year - 4) % 10]
-        year_ji = ji[(year - 4) % 12]
-        month_gan = gan[(month + year) % 10]
-        month_ji = ji[(month + year) % 12]
-        day_gan = gan[(day + year) % 10]
-        day_ji = ji[(day + month) % 12]
+            year_gan = gan[(year - 4) % 10]
+            year_ji = ji[(year - 4) % 12]
+            month_gan = gan[(month + year) % 10]
+            month_ji = ji[(month + year) % 12]
+            day_gan = gan[(day + year) % 10]
+            day_ji = ji[(day + month) % 12]
 
-        st.markdown(f"""
-        <div style='background:#fff0f5; padding:20px; border-radius:15px; text-align:center;'>
-            <h3>사주 (연/월/일)</h3>
-            <p><b>{year_gan}{year_ji}년 {month_gan}{month_ji}월 {day_gan}{day_ji}일</b></p>
-            <p style='color:gray;'>※ 간단한 사주 해석 (생시는 제외됨)</p>
-        </div>
-        """, unsafe_allow_html=True)
+            st.markdown(f"""
+            <div style='background:#fff0f5; padding:20px; border-radius:15px; text-align:center;'>
+                <h3>사주 (연/월/일)</h3>
+                <p><b>{year_gan}{year_ji}년 {month_gan}{month_ji}월 {day_gan}{day_ji}일</b></p>
+                <p style='color:gray;'>※ 간단한 사주 해석 (생시는 제외됨)</p>
+            </div>
+            """, unsafe_allow_html=True)
