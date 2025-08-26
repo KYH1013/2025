@@ -392,18 +392,18 @@ BIRTH_FLOWERS_BY_DAY.update({
 
 # 월별 탄생석
 BIRTH_STONES = {
-    1: {"name": "가넷 (Garnet) 💎", "meaning": "우정, 진리"},
-    2: {"name": "자수정 (Amethyst) 💜", "meaning": "평온, 진실"},
-    3: {"name": "아쿠아마린 (Aquamarine) 🌊", "meaning": "용기, 청명"},
-    4: {"name": "다이아몬드 (Diamond) 💎", "meaning": "영원, 순수"},
-    5: {"name": "에메랄드 (Emerald) 💚", "meaning": "지혜, 행운"},
-    6: {"name": "진주 (Pearl) 🤍", "meaning": "순결, 장수"},
-    7: {"name": "루비 (Ruby) ❤️", "meaning": "열정, 사랑"},
-    8: {"name": "페리도트 (Peridot) 💚", "meaning": "성장, 화합"},
-    9: {"name": "사파이어 (Sapphire) 💙", "meaning": "진실, 충성"},
-    10: {"name": "오팔 (Opal) 💎", "meaning": "희망, 창의"},
-    11: {"name": "토파즈 (Topaz) 💛", "meaning": "우정, 건강"},
-    12: {"name": "터키석/탄자나이트 (Turquoise/Tanzanite) 🟦", "meaning": "성취, 성공"},
+    1: {"name": "가넷 (Garnet) 💎", "meaning": "사랑, 진실, 정조, 우정"},
+    2: {"name": "자수정 (Amethyst) 💜", "meaning": "정조, 성실, 평화"},
+    3: {"name": "아쿠아마린 (Aquamarine) 🌊", "meaning": "침착, 총명, 용감, 젊음, 행복"},
+    4: {"name": "다이아몬드 (Diamond) 💎", "meaning": "영원한 사랑, 행복, 불멸"},
+    5: {"name": "에메랄드 (Emerald) 💚", "meaning": "행복, 행운"},
+    6: {"name": "진주 (Pearl) 🤍", "meaning": "아름다움, 순결, 건강, 부귀, 장부의 권위"},
+    7: {"name": "루비 (Ruby) ❤️", "meaning": "영원한 생명, 열정, 사랑, 평화"},
+    8: {"name": "페리도트 (Peridot) 💚", "meaning": "부부의 행복, 지혜, 희망"},
+    9: {"name": "사파이어 (Sapphire) 💙", "meaning": "자애, 성실, 덕망, 진실"},
+    10: {"name": "오팔 (Opal) 💎", "meaning": "사랑, 진실, 정조, 희망, 순결"},
+    11: {"name": "토파즈 (Topaz) 💛", "meaning": "우우정, 인내, 결백, 건강, 희망"},
+    12: {"name": "터키석/탄자나이트 (Turquoise/Tanzanite) 🟦", "meaning": "행운, 성공, 번영, 승리"},
 }
 
 
