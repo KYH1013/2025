@@ -46,22 +46,32 @@ with tab1:
     col1, col2 = st.columns(2)
 
     with col1:
-        with st.expander("🌸 탄생화", expanded=True, key="exp_flower"):
-            flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(f"{month1:02d}-{day1:02d}")
-            st.write(f"{flower['name']} - {flower['meaning']}" if flower else "정보 없음")
+        # 탄생화
+        flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(f"{month1:02d}-{day1:02d}")
+        with st.expander("🌸 탄생화"):
+            if flower:
+                st.write(f"{flower['name']} - {flower['meaning']}")
+            else:
+                st.write("정보 없음")
 
-        with st.expander("💎 탄생석", expanded=True, key="exp_stone"):
-            stone = birthdata.BIRTH_STONES.get(month1)
-            st.write(f"{stone['name']} - {stone['meaning']}" if stone else "정보 없음")
+        # 탄생석
+        stone = birthdata.BIRTH_STONES.get(month1)
+        with st.expander("💎 탄생석"):
+            if stone:
+                st.write(f"{stone['name']} - {stone['meaning']}")
+            else:
+                st.write("정보 없음")
 
     with col2:
-        with st.expander("✨ 별자리", expanded=True, key="exp_zodiac"):
-            sign, sign_emoji = birthdata.get_zodiac(month1, day1)
+        # 별자리
+        sign, sign_emoji = birthdata.get_zodiac(month1, day1)
+        with st.expander("✨ 별자리"):
             st.write(f"{sign} {sign_emoji}")
 
-        with st.expander("🐲 띠 & 궁합", expanded=True, key="exp_chinese"):
-            chinese_zodiac = birthdata.get_chinese_zodiac(year1)
-            compat = ZODIAC_COMPATIBILITY.get(chinese_zodiac, {"좋음": [], "안좋음": []})
+        # 띠 & 궁합
+        chinese_zodiac = birthdata.get_chinese_zodiac(year1)
+        compat = ZODIAC_COMPATIBILITY.get(chinese_zodiac, {"좋음": [], "안좋음": []})
+        with st.expander("🐲 띠 & 궁합"):
             st.write(f"{chinese_zodiac}\n💖 {', '.join(compat['좋음'])}\n💔 {', '.join(compat['안좋음'])}")
 
     # 월별 기념일
