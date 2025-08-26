@@ -182,31 +182,31 @@ with tab3:
         message = "⚠️ 조금 조심해야 하는 궁합입니다. 서로 배려가 필요합니다."
 
     # -----------------------
-    # 카드형 UI 출력
+    # 카드형 UI 출력 (점수 + 분류 기준)
     # -----------------------
-    st.markdown(f"<div style='background:#fffaf0; padding:20px; border-radius:15px; text-align:center;'>"
-                f"<h3>종합 궁합 점수: {score}</h3>"
-                # -----------------------
-# 카드형 UI 출력 (점수 + 기준)
-# -----------------------
-st.markdown(f"""
-<div style='background:#fffaf0; padding:20px; border-radius:15px; text-align:center;'>
-    <h3>💞 종합 궁합 점수: {score} / 10</h3>
-    <p style='font-size:16px;'>점수 기준:</p>
-    <ul style='text-align:left; display:inline-block;'>
-        <li>🌟 8-10점: 매우 좋은 궁합</li>
-        <li>🙂 5-7점: 꽤 좋은 궁합</li>
-        <li>⚠️ 0-4점: 주의 필요</li>
-    </ul>
-    <p style='font-size:18px; margin-top:10px;'>{message}</p>
-</div>
-""", unsafe_allow_html=True)
+    st.markdown(f"""
+    <div style='background:#fffaf0; padding:20px; border-radius:15px; text-align:center;'>
+        <h3>💞 종합 궁합 점수: {score} / 10</h3>
+        <p style='font-size:16px;'>점수 기준:</p>
+        <ul style='text-align:left; display:inline-block;'>
+            <li>🌟 8-10점: 매우 좋은 궁합</li>
+            <li>🙂 5-7점: 꽤 좋은 궁합</li>
+            <li>⚠️ 0-4점: 주의 필요</li>
+        </ul>
+        <p style='font-size:18px; margin-top:10px;'>{message}</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-
+    # -----------------------
+    # 상세 비교 카드
+    # -----------------------
     st.markdown("<h4>📌 상세 비교</h4>", unsafe_allow_html=True)
     for detail in details:
         st.markdown(f"<div style='background:#f5f5f5; padding:10px; border-radius:10px; margin-bottom:5px;'>{detail}</div>", unsafe_allow_html=True)
 
+    # -----------------------
+    # 사주/오행/별자리 비교
+    # -----------------------
     st.markdown("<h4>📌 사주/오행/별자리 비교</h4>", unsafe_allow_html=True)
     st.write(f"사주1: {saju1['year_gan']}{saju1['year_ji']}년 {saju1['month_gan']}{saju1['month_ji']}월 {saju1['day_gan']}{saju1['day_ji']}일")
     st.write(f"사주2: {saju2['year_gan']}{saju2['year_ji']}년 {saju2['month_gan']}{saju2['month_ji']}월 {saju2['day_gan']}{saju2['day_ji']}일")
