@@ -1,6 +1,7 @@
 import streamlit as st
 import birthdata
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
+import random
 
 # ---------------------------
 # 상수 정의
@@ -91,15 +92,27 @@ def days_to_birthday(born):
 
 def months_days_since_birth(born):
     today = date.today()
-    total_days = (today - born).days  # dob1이 datetime.date라서 .date() 제거
-    months = total_days // 30  # 대략적인 개월 계산
+    total_days = (today - born).days
+    months = total_days // 30
     return months, total_days
+
+def get_day_of_week(born):
+    days = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"]
+    return days[born.weekday()]
+
+def simple_weekly_monthly_fortune(elem):
+    # 간단 룰 기반 운세 생성
+    love = random.choice(["좋음", "보통", "주의"])
+    money = random.choice(["좋음", "보통", "주의"])
+    health = random.choice(["좋음", "보통", "주의"])
+    advice = ELEM_ADVICE.get(elem, "")
+    return love, money, health, advice
 
 # ---------------------------
 # 페이지 설정
 # ---------------------------
 st.set_page_config(page_title="생일 정보 확인", layout="centered")
-st.title("🎉 알쓸생정(알아도 쓸모없는 생일 잡정보)")
+st.title("🎉 나의 생일 정보 확인 웹사이트")
 
 # 오늘 날짜
 today = datetime.today()
@@ -117,8 +130,9 @@ dob1 = st.date_input("첫 번째 생년월일 선택", today, min_value=min_date
 age = calculate_age(dob1)
 d_day = days_to_birthday(dob1)
 months, total_days = months_days_since_birth(dob1)
+weekday = get_day_of_week(dob1)
 
-st.info(f"🎈 나이: {age}세 | 다음 생일까지 D-{d_day}일")
+st.info(f"🎈 나이: {age}세 | 다음 생일까지 D-{d_day}일 | 태어난 요일: {weekday}")
 st.success(f"🗓 태어난지 {months}개월 / {total_days}일 지났습니다")
 
 # ---------------------------
@@ -157,10 +171,10 @@ with tab1:
             st.write(f"{chinese_zodiac}\n💖 {', '.join(compat['좋음'])}\n💔 {', '.join(compat['안좋음'])}")
 
 # ---------------------------
-# 탭2: 사주 해석
+# 탭2: 사주 해석 + 운세
 # ---------------------------
 with tab2:
-    st.subheader("🔮 사주 해석")
+    st.subheader("🔮 사주 해석 & 운세")
     elements, branches = saju_elements(dob1)
     
     for branch, elem in zip(branches, elements):
@@ -171,6 +185,14 @@ with tab2:
             f"</div>",
             unsafe_allow_html=True
         )
+    
+    # 1번: 간단한 주간/월간 운세
+    st.markdown("### 📅 이번 주/이번 달 운세 (간단 룰 기반)")
+    love, money, health, advice = simple_weekly_monthly_fortune(elements[0])
+    st.write(f"💖 사랑운: {love}")
+    st.write(f"💰 금전운: {money}")
+    st.write(f"🩺 건강운: {health}")
+    st.write(f"🌟 오늘의 조언: {advice}")
 
 # ---------------------------
 # 탭3: 종합 궁합
