@@ -147,30 +147,51 @@ with tab3:
     st.subheader("💞 종합 궁합")
 
     # ---------------------------
+    # 두 번째 생일 입력
+    # ---------------------------
+    dob2 = st.date_input("두 번째 생년월일 선택", datetime(2000,1,1), key="dob2")
+    month2, day2, year2 = dob2.month, dob2.day, dob2.year
+
+    # ---------------------------
     # 1. 띠 궁합
     # ---------------------------
     st.markdown("### 🐲 띠 궁합")
-    # dob1.year 기준으로 띠 계산
-    chinese_zodiac = CHINESE_ZODIAC[(dob1.year - 4) % 12]
-    zodiac_name = chinese_zodiac[:chinese_zodiac.find("띠")]
-    compat = ZODIAC_COMPATIBILITY.get(zodiac_name, {"좋음": [], "안좋음": []})
-    st.write(f"{chinese_zodiac}\n💖 {', '.join(compat['좋음'])}\n💔 {', '.join(compat['안좋음'])}")
+    # 첫 번째 사람 띠
+    chinese_zodiac1 = CHINESE_ZODIAC[(dob1.year - 4) % 12]
+    zodiac_name1 = chinese_zodiac1[:chinese_zodiac1.find("띠")]
+    # 두 번째 사람 띠
+    chinese_zodiac2 = CHINESE_ZODIAC[(dob2.year - 4) % 12]
+    zodiac_name2 = chinese_zodiac2[:chinese_zodiac2.find("띠")]
+
+    compat1 = ZODIAC_COMPATIBILITY.get(zodiac_name1, {"좋음": [], "안좋음": []})
+    # 두 사람 띠 궁합
+    if zodiac_name2 in compat1["좋음"]:
+        zodiac_result = f"💖 좋은 궁합: {chinese_zodiac1} × {chinese_zodiac2}"
+    elif zodiac_name2 in compat1["안좋음"]:
+        zodiac_result = f"💔 안 좋은 궁합: {chinese_zodiac1} × {chinese_zodiac2}"
+    else:
+        zodiac_result = f"💛 보통 궁합: {chinese_zodiac1} × {chinese_zodiac2}"
+
+    st.write(zodiac_result)
 
     # ---------------------------
     # 2. 사주 궁합 (간단 오행 기반)
     # ---------------------------
     st.markdown("### 🔮 사주 궁합 (간단 오행 기반)")
 
-    def calculate_saju_compat(dob):
+    def calculate_saju_compat(dob1, dob2):
         """
         간단 예시: 연,월,일 기반 오행 점수 계산
         실제 오행 궁합 알고리즘은 더 복잡하게 구현 가능
         """
         # 예시 계산: (연도 마지막 자리 * 3 + 월 * 2 + 일) % 100
-        score = ((dob.year % 10) * 3 + dob.month * 2 + dob.day) % 100
+        score1 = ((dob1.year % 10) * 3 + dob1.month * 2 + dob1.day) % 100
+        score2 = ((dob2.year % 10) * 3 + dob2.month * 2 + dob2.day) % 100
+        # 두 점수 차이가 작을수록 궁합이 좋다고 가정
+        score = 100 - abs(score1 - score2)
         return score
 
-    saju_score = calculate_saju_compat(dob1)
+    saju_score = calculate_saju_compat(dob1, dob2)
 
     # 점수별 해석
     if saju_score >= 70:
