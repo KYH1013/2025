@@ -92,13 +92,12 @@ def get_day_of_week(born):
     return days[born.weekday()]
 
 def date_based_fortune(elem, target_date):
-    # 오행별 날짜 기반 고정 운세
     fortunes = {
-        "목": ["창의적 하루", "성장 중심", "새로운 도전"],
-        "화": ["열정적인 하루", "인간관계 주의", "활동적"],
-        "토": ["안정된 하루", "계획 중심", "차분함"],
-        "금": ["결단력 있는 하루", "재물 운 주목", "목표 집중"],
-        "수": ["지혜로운 하루", "학업/정보 습득", "유연함"]
+        "목": ["🌿 창의적이고 활기찬 하루", "🌱 새로운 도전의 기회", "🌳 성장 중심의 하루"],
+        "화": ["🔥 열정적인 하루", "💬 인간관계 활발", "⚡ 에너지가 넘치는 활동적 하루"],
+        "토": ["🏡 안정된 하루", "📝 계획 중심", "📌 차분함과 책임감"],
+        "금": ["💎 결단력 있는 하루", "💰 재물 운 주목", "🎯 목표 집중"],
+        "수": ["💧 지혜로운 하루", "📚 학습과 정보 습득", "🌊 유연함 유지"]
     }
     key = f"{elem}-{target_date.isoformat()}"
     hash_value = int(hashlib.sha256(key.encode()).hexdigest(), 16)
@@ -137,16 +136,10 @@ with tab1:
         with st.expander("🌸 탄생화", expanded=True):
             month_day_key = f"{dob1.month:02d}-{dob1.day:02d}"
             flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(month_day_key)
-            if flower:
-                st.markdown(f"{flower['name']} - {flower['meaning']}")
-            else:
-                st.write("정보 없음")
+            st.markdown(f"{flower['name']} - {flower['meaning']}" if flower else "정보 없음")
         with st.expander("💎 탄생석", expanded=True):
             stone = birthdata.BIRTH_STONES.get(dob1.month)
-            if stone:
-                st.markdown(f"{stone['name']} - {stone['meaning']}")
-            else:
-                st.write("정보 없음")
+            st.markdown(f"{stone['name']} - {stone['meaning']}" if stone else "정보 없음")
     with col2:
         with st.expander("✨ 별자리", expanded=True):
             sign, sign_emoji = birthdata.get_zodiac(dob1.month, dob1.day)
@@ -175,7 +168,7 @@ with tab2:
     st.markdown(f"### 🌟 오늘의 운세: {fortune_today}")
 
 # ---------------------------
-# 탭3: 종합 궁합
+# 탭3: 종합 궁합 (가독성 강화 카드형)
 # ---------------------------
 with tab3:
     st.subheader("💞 종합 궁합")
@@ -190,13 +183,23 @@ with tab3:
         zodiac_result = f"💔 안 좋은 궁합: {cz1} × {cz2}"
     else:
         zodiac_result = f"💛 보통 궁합: {cz1} × {cz2}"
-    st.write(zodiac_result)
     
     saju_score = calculate_saju_compat(dob1, dob2)
     if saju_score >= 70:
         saju_result = "궁합이 매우 좋음 💖💖💖"
+        bg_color = "#ffe6e6"
     elif saju_score >= 40:
         saju_result = "궁합이 보통 💛💛"
+        bg_color = "#fff7cc"
     else:
         saju_result = "궁합이 낮음 💔💔💔"
-    st.markdown(f"사주 점수: {saju_score}/100 | {saju_result}")
+        bg_color = "#d9d9d9"
+
+    st.markdown(
+        f"<div style='padding:20px; border-radius:15px; background-color:{bg_color}; text-align:center;'>"
+        f"<h3>{zodiac_result}</h3>"
+        f"<h4>사주 점수: {saju_score}/100</h4>"
+        f"<p>{saju_result}</p>"
+        f"</div>",
+        unsafe_allow_html=True
+    )
