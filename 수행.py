@@ -144,18 +144,36 @@ with tab3:
     sign1, _ = birthdata.get_zodiac(month1, day1)
     sign2, _ = birthdata.get_zodiac(month2, day2)
 
-    # 점수 산정
+    # -----------------------
+    # 상세 점수 계산
+    # -----------------------
     score = 0
-    for k in ["year_gan","year_ji","month_gan","month_ji","day_gan","day_ji"]:
+    details = []
+
+    # 1) 사주 비교
+    for k, label in [("year_gan","연간"), ("year_ji","연지"), 
+                     ("month_gan","월간"), ("month_ji","월지"), 
+                     ("day_gan","일간"), ("day_ji","일지")]:
         if saju1[k] == saju2[k]:
+            details.append(f"{label}: 같음 ✅")
             score += 1
+        else:
+            details.append(f"{label}: 다름 ⚠️")
+
+    # 2) 오행 비교
     common_elements = set(elements1) & set(elements2)
     score += len(common_elements)
+    details.append(f"오행 겹치는 요소: {', '.join(common_elements) if common_elements else '없음'}")
+
+    # 3) 별자리 비교 (간단)
     compatible_pairs = {("양", "사"), ("사", "양"), ("쥐","용"), ("용","쥐")} # 예시
     if (sign1[:1], sign2[:1]) in compatible_pairs:
         score += 1
+        details.append(f"별자리 궁합: 좋음 ✅ ({sign1} vs {sign2})")
+    else:
+        details.append(f"별자리 궁합: 보통 ⚠️ ({sign1} vs {sign2})")
 
-    # 메시지
+    # 4) 최종 메시지
     if score >= 8:
         message = "🌟 매우 좋은 궁합입니다! 서로 잘 맞고 조화롭습니다."
     elif score >= 5:
@@ -163,19 +181,19 @@ with tab3:
     else:
         message = "⚠️ 조금 조심해야 하는 궁합입니다. 서로 배려가 필요합니다."
 
-    # 출력
+    # -----------------------
+    # 카드형 UI 출력
+    # -----------------------
     st.markdown(f"<div style='background:#fffaf0; padding:20px; border-radius:15px; text-align:center;'>"
-                f"<h3>종합 궁합 점수: {score}</h3><p style='font-size:18px;'>{message}</p></div>",
-                unsafe_allow_html=True)
+                f"<h3>종합 궁합 점수: {score}</h3>"
+                f"<p style='font-size:18px;'>{message}</p></div>", unsafe_allow_html=True)
 
-    # 비교 결과
-    st.markdown("<h4>📌 사주 비교</h4>", unsafe_allow_html=True)
-    st.write(f"연간: {saju1['year_gan']}{saju1['year_ji']} vs {saju2['year_gan']}{saju2['year_ji']}")
-    st.write(f"월간: {saju1['month_gan']}{saju1['month_ji']} vs {saju2['month_gan']}{saju2['month_ji']}")
-    st.write(f"일간: {saju1['day_gan']}{saju1['day_ji']} vs {saju2['day_gan']}{saju2['day_ji']}")
+    st.markdown("<h4>📌 상세 비교</h4>", unsafe_allow_html=True)
+    for detail in details:
+        st.markdown(f"<div style='background:#f5f5f5; padding:10px; border-radius:10px; margin-bottom:5px;'>{detail}</div>", unsafe_allow_html=True)
 
-    st.markdown("<h4>📌 오행 비교</h4>", unsafe_allow_html=True)
-    st.write(f"{elements1} vs {elements2}")
-
-    st.markdown("<h4>📌 별자리 비교</h4>", unsafe_allow_html=True)
-    st.write(f"{sign1} vs {sign2}")
+    st.markdown("<h4>📌 사주/오행/별자리 비교</h4>", unsafe_allow_html=True)
+    st.write(f"사주1: {saju1['year_gan']}{saju1['year_ji']}년 {saju1['month_gan']}{saju1['month_ji']}월 {saju1['day_gan']}{saju1['day_ji']}일")
+    st.write(f"사주2: {saju2['year_gan']}{saju2['year_ji']}년 {saju2['month_gan']}{saju2['month_ji']}월 {saju2['day_gan']}{saju2['day_ji']}일")
+    st.write(f"오행1: {elements1} / 오행2: {elements2}")
+    st.write(f"별자리: {sign1} vs {sign2}")
