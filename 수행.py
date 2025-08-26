@@ -144,100 +144,47 @@ with tab2:
 # 탭3: 종합 궁합
 # ---------------------------
 with tab3:
-    st.subheader("💞 두 사람 종합 궁합")
-    dob2 = st.date_input("두 번째 생년월일 선택", datetime(2000,1,1), key="dob2")
-    month2, day2, year2 = dob2.month, dob2.day, dob2.year
+    st.subheader("💞 종합 궁합")
 
-    # 사주 계산 함수
-    def get_saju(y, m, d):
-        return {
-            "year_gan": gan[(y - 4) % 10],
-            "year_ji": ji[(y - 4) % 12],
-            "month_gan": gan[(m + y) % 10],
-            "month_ji": ji[(m + y) % 12],
-            "day_gan": gan[(d + y) % 10],
-            "day_ji": ji[(d + m) % 12]
-        }
+    # ---------------------------
+    # 1. 띠 궁합
+    # ---------------------------
+    st.markdown("### 🐲 띠 궁합")
+    # dob1.year 기준으로 띠 계산
+    chinese_zodiac = CHINESE_ZODIAC[(dob1.year - 4) % 12]
+    zodiac_name = chinese_zodiac[:chinese_zodiac.find("띠")]
+    compat = ZODIAC_COMPATIBILITY.get(zodiac_name, {"좋음": [], "안좋음": []})
+    st.write(f"{chinese_zodiac}\n💖 {', '.join(compat['좋음'])}\n💔 {', '.join(compat['안좋음'])}")
 
-    saju1 = get_saju(year1, month1, day1)
-    saju2 = get_saju(year2, month2, day2)
+    # ---------------------------
+    # 2. 사주 궁합 (간단 오행 기반)
+    # ---------------------------
+    st.markdown("### 🔮 사주 궁합 (간단 오행 기반)")
 
-    # 오행
-    five_elements = {"갑":"목","을":"목","병":"화","정":"화","무":"토","기":"토","경":"금","신":"금","임":"수","계":"수"}
-    def get_elements(saju):
-        return [five_elements[saju["year_gan"]], five_elements[saju["month_gan"]], five_elements[saju["day_gan"]]]
-    elements1 = get_elements(saju1)
-    elements2 = get_elements(saju2)
+    def calculate_saju_compat(dob):
+        """
+        간단 예시: 연,월,일 기반 오행 점수 계산
+        실제 오행 궁합 알고리즘은 더 복잡하게 구현 가능
+        """
+        # 예시 계산: (연도 마지막 자리 * 3 + 월 * 2 + 일) % 100
+        score = ((dob.year % 10) * 3 + dob.month * 2 + dob.day) % 100
+        return score
 
-    # 별자리
-    sign1, _ = birthdata.get_zodiac(month1, day1)
-    sign2, _ = birthdata.get_zodiac(month2, day2)
+    saju_score = calculate_saju_compat(dob1)
 
-    # -----------------------
-    # 상세 점수 계산
-    # -----------------------
-    score = 0
-    details = []
-
-    # 1) 사주 비교
-    for k, label in [("year_gan","연간"), ("year_ji","연지"), 
-                     ("month_gan","월간"), ("month_ji","월지"), 
-                     ("day_gan","일간"), ("day_ji","일지")]:
-        if saju1[k] == saju2[k]:
-            details.append(f"{label}: 같음 ✅")
-            score += 1
-        else:
-            details.append(f"{label}: 다름 ⚠️")
-
-    # 2) 오행 비교
-    common_elements = set(elements1) & set(elements2)
-    score += len(common_elements)
-    details.append(f"오행 겹치는 요소: {', '.join(common_elements) if common_elements else '없음'}")
-
-    # 3) 별자리 비교 (간단)
-    compatible_pairs = {("양", "사"), ("사", "양"), ("쥐","용"), ("용","쥐")} # 예시
-    if (sign1[:1], sign2[:1]) in compatible_pairs:
-        score += 1
-        details.append(f"별자리 궁합: 좋음 ✅ ({sign1} vs {sign2})")
+    # 점수별 해석
+    if saju_score >= 70:
+        saju_result = "궁합이 매우 좋음 💖💖💖"
+    elif saju_score >= 40:
+        saju_result = "궁합이 보통 💛💛"
     else:
-        details.append(f"별자리 궁합: 보통 ⚠️ ({sign1} vs {sign2})")
+        saju_result = "궁합이 낮음 💔💔💔"
 
-    # 4) 최종 메시지
-    if score >= 8:
-        message = "🌟 매우 좋은 궁합입니다! 서로 잘 맞고 조화롭습니다."
-    elif score >= 5:
-        message = "🙂 꽤 좋은 궁합입니다. 서로 이해하고 보완 가능합니다."
-    else:
-        message = "⚠️ 조금 조심해야 하는 궁합입니다. 서로 배려가 필요합니다."
-
-    # -----------------------
-    # 카드형 UI 출력 (점수 + 분류 기준)
-    # -----------------------
-    st.markdown(f"""
-    <div style='background:#fffaf0; padding:20px; border-radius:15px; text-align:center;'>
-        <h3>💞 종합 궁합 점수: {score} / 10</h3>
-        <p style='font-size:16px;'>점수 기준:</p>
-        <ul style='text-align:left; display:inline-block;'>
-            <li>🌟 8-10점: 매우 좋은 궁합</li>
-            <li>🙂 5-7점: 꽤 좋은 궁합</li>
-            <li>⚠️ 0-4점: 주의 필요</li>
-        </ul>
-        <p style='font-size:18px; margin-top:10px;'>{message}</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # -----------------------
-    # 상세 비교 카드
-    # -----------------------
-    st.markdown("<h4>📌 상세 비교</h4>", unsafe_allow_html=True)
-    for detail in details:
-        st.markdown(f"<div style='background:#f5f5f5; padding:10px; border-radius:10px; margin-bottom:5px;'>{detail}</div>", unsafe_allow_html=True)
-
-    # -----------------------
-    # 사주/오행/별자리 비교
-    # -----------------------
-    st.markdown("<h4>📌 사주/오행/별자리 비교</h4>", unsafe_allow_html=True)
-    st.write(f"사주1: {saju1['year_gan']}{saju1['year_ji']}년 {saju1['month_gan']}{saju1['month_ji']}월 {saju1['day_gan']}{saju1['day_ji']}일")
-    st.write(f"사주2: {saju2['year_gan']}{saju2['year_ji']}년 {saju2['month_gan']}{saju2['month_ji']}월 {saju2['day_gan']}{saju2['day_ji']}일")
-    st.write(f"오행1: {elements1} / 오행2: {elements2}")
-    st.write(f"별자리: {sign1} vs {sign2}")
+    # 카드 형식으로 표시
+    st.markdown(
+        f"<div style='padding:20px; border-radius:10px; background-color:#f0f8ff; text-align:center;'>"
+        f"<h3>사주 점수: {saju_score}/100</h3>"
+        f"<p>{saju_result}</p>"
+        f"</div>",
+        unsafe_allow_html=True
+    )
