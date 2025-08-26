@@ -64,8 +64,7 @@ def calculate_saju_compat(dob1, dob2):
             score += 15
         elif ELEMS_CONFLICT.get(e1) == e2:
             score -= 15
-    score = max(0, min(100, score))
-    return score
+    return max(0, min(100, score))
 
 def safe_date(year, month, day):
     try:
@@ -88,14 +87,12 @@ def days_to_birthday(born):
     next_birthday = date(today.year, born.month, born.day)
     if next_birthday < today:
         next_birthday = date(today.year + 1, born.month, born.day)
-    delta = next_birthday - today
-    return delta.days
+    return (next_birthday - today).days
 
 def months_days_since_birth(born):
     today = date.today()
-    total_days = (today - born.date()).days
-    # 대략적인 개월 계산 (30일 기준)
-    months = total_days // 30
+    total_days = (today - born).days  # dob1이 datetime.date라서 .date() 제거
+    months = total_days // 30  # 대략적인 개월 계산
     return months, total_days
 
 # ---------------------------
@@ -112,7 +109,7 @@ max_date = today
 # ---------------------------
 # 첫 번째 생일 입력
 # ---------------------------
-dob1 = st.date_input("첫 번째 생년월일 선택", today, min_value=min_date, max_value=max_date, key="dob1")
+dob1 = st.date_input("첫 번째 생년월일 선택", today, min_value=min_date, max_value=max_date)
 
 # ---------------------------
 # 나이, D-Day, 개월/일 계산
