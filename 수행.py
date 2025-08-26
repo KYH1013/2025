@@ -1,6 +1,6 @@
 import streamlit as st
 import birthdata
-from datetime import datetime
+from datetime import datetime, date
 
 # ---------------------------
 # 상수 정의
@@ -67,6 +67,37 @@ def calculate_saju_compat(dob1, dob2):
     score = max(0, min(100, score))
     return score
 
+def safe_date(year, month, day):
+    try:
+        return datetime(year, month, day)
+    except ValueError:
+        if month == 2 and day == 29:
+            return datetime(year, 2, 28)
+        else:
+            raise
+
+def calculate_age(born):
+    today = date.today()
+    age = today.year - born.year
+    if (today.month, today.day) < (born.month, born.day):
+        age -= 1
+    return age
+
+def days_to_birthday(born):
+    today = date.today()
+    next_birthday = date(today.year, born.month, born.day)
+    if next_birthday < today:
+        next_birthday = date(today.year + 1, born.month, born.day)
+    delta = next_birthday - today
+    return delta.days
+
+def months_days_since_birth(born):
+    today = date.today()
+    total_days = (today - born.date()).days
+    # 대략적인 개월 계산 (30일 기준)
+    months = total_days // 30
+    return months, total_days
+
 # ---------------------------
 # 페이지 설정
 # ---------------------------
@@ -75,14 +106,23 @@ st.title("🎉 나의 생일 정보 확인 웹사이트")
 
 # 오늘 날짜
 today = datetime.today()
-min_date = today.replace(year=today.year - 100)  # 최소 100세
-max_date = today  # 오늘까지
+min_date = safe_date(today.year - 100, today.month, today.day)
+max_date = today
 
 # ---------------------------
 # 첫 번째 생일 입력
 # ---------------------------
 dob1 = st.date_input("첫 번째 생년월일 선택", today, min_value=min_date, max_value=max_date, key="dob1")
-month1, day1, year1 = dob1.month, dob1.day, dob1.year
+
+# ---------------------------
+# 나이, D-Day, 개월/일 계산
+# ---------------------------
+age = calculate_age(dob1)
+d_day = days_to_birthday(dob1)
+months, total_days = months_days_since_birth(dob1)
+
+st.info(f"🎈 나이: {age}세 | 다음 생일까지 D-{d_day}일")
+st.success(f"🗓 태어난지 {months}개월 / {total_days}일 지났습니다")
 
 # ---------------------------
 # 탭 생성
@@ -98,13 +138,13 @@ with tab1:
     
     with col1:
         with st.expander("🌸 탄생화", expanded=True):
-            flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(f"{month1:02d}-{day1:02d}")
+            flower = birthdata.BIRTH_FLOWERS_BY_DAY.get(f"{dob1.month:02d}-{dob1.day:02d}")
             if flower:
                 st.write(f"{flower['name']} - {flower['meaning']}")
             else:
                 st.write("정보 없음")
         with st.expander("💎 탄생석", expanded=True):
-            stone = birthdata.BIRTH_STONES.get(month1)
+            stone = birthdata.BIRTH_STONES.get(dob1.month)
             if stone:
                 st.write(f"{stone['name']} - {stone['meaning']}")
             else:
@@ -112,10 +152,10 @@ with tab1:
     
     with col2:
         with st.expander("✨ 별자리", expanded=True):
-            sign, sign_emoji = birthdata.get_zodiac(month1, day1)
+            sign, sign_emoji = birthdata.get_zodiac(dob1.month, dob1.day)
             st.write(f"{sign} {sign_emoji}")
         with st.expander("🐲 띠 & 궁합", expanded=True):
-            chinese_zodiac, zodiac_name = get_chinese_zodiac(year1)
+            chinese_zodiac, zodiac_name = get_chinese_zodiac(dob1.year)
             compat = ZODIAC_COMPATIBILITY.get(zodiac_name, {"좋음": [], "안좋음": []})
             st.write(f"{chinese_zodiac}\n💖 {', '.join(compat['좋음'])}\n💔 {', '.join(compat['안좋음'])}")
 
